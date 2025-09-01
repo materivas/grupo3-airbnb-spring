@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Airbnb - Propiedades Disponibles</title>
+    <link rel="icon" th:href="@{/images/airbnb-logo-mini.jpg}">
+    <link rel="stylesheet" th:href="@{/css/index.css}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          integrity="sha512-PoP1RQZHy+QTm+fFeN+7UcM0kR4Yv7CWnVaRPcP3gD28hEAG6NQXPPoXsIgIABeih8RPYHzqXcoAA2dku+6aew=="
+          crossorigin="anonymous" referrerpolicy>
+</head>
+
+<body>
+<header class="navbar">
+    <div class="navbar-left">
+        <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo" />
+    </div>
+<!--
+    <div class="navbar-right">
+        <a th:href="@{/publicar}" class="nav-link">Convertite en anfitrión</a>
+        <a th:href="@{/mis-reservas}" class="nav-link" style="padding-left: 20px;">Mis Reservas</a>
+    </div>
+	-->
+</header>
+
+<main>
+    <h2>Propiedades disponibles</h2>
+    <div id="contenedor-propiedades"></div>
+</main>
+
+<script th:src="@{/js/propiedades.js}"></script>
+</body>
+
+</html>

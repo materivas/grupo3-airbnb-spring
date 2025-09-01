@@ -1,0 +1,206 @@
+/* ====================
+   GLOBAL
+==================== */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+    color: #222;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ====================
+   NAVBAR / HEADER
+==================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    height: 100px;
+    background: white;
+    border-bottom: 1px solid #e2e2e2;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.navbar-left, .navbar-right, .navbar-center {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-left { justify-content: flex-start; }
+.navbar-right { justify-content: flex-end; flex: 1; }
+.navbar-center { flex: 2; justify-content: center; }
+
+.navbar-right .nav-link {
+    margin-left: 16px;
+    font-weight: 500;
+    color: #000;
+}
+
+/* ====================
+   SEARCH BAR
+==================== */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 40px;
+    padding: 4px 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    transition: box-shadow 0.2s ease;
+}
+
+.search-bar:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.search-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    text-align: center;
+}
+
+.search-item label {
+    font-size: 12px;
+    color: #717171;
+    margin-bottom: 4px;
+}
+
+.search-item span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ====================
+   BOTONES
+==================== */
+.search-btn, .icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+}
+
+.search-btn {
+    background: #FF385C;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border: none;
+}
+
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    background: #f7f7f7;
+    border: none;
+}
+
+.icon-btn:hover {
+    background: #e2e2e2;
+}
+
+/* ====================
+   MAIN / CONTENIDO
+==================== */
+main {
+    padding: 160px 20px 20px 20px; /* Top padding para navbar */
+}
+
+/* ====================
+   CARDS
+==================== */
+.contenedor, #contenedor-propiedades {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+}
+
+.card-content {
+    padding: 14px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #717171;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #222;
+    margin: 6px 0;
+}
+
+.card-price {
+    margin-top: 10px;
+    font-size: 15px;
+}
+
+.card-price strong {
+    font-weight: 700;
+    color: #000;
+}
+
+.card-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 2;
+}
+
+/* ====================
+   LOGO
+==================== */
+.logo {
+    height: 32px;
+}
+
+

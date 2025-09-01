@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Propiedad</title>
+    <link rel="stylesheet" th:href="@{/css/propiedad-detail.css}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-left">
+            <a th:href="@{/}">
+                <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo">
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="title-section">
+            <h1 id="titulo"></h1>
+
+        </div>
+
+        <div class="img-container" id="imagenes"></div>
+
+        <div class="details">
+            <div class="detail-box"><strong>Precio:</strong><br><span id="precio"></span></div>
+            <div class="detail-box"><strong>Habitaciones:</strong><br><span id="habitaciones"></span></div>
+            <div class="detail-box"><strong>Baños:</strong><br><span id="banos"></span></div>
+            <div class="detail-box"><strong>Huéspedes:</strong><br><span id="huespedes"></span></div>
+        </div>
+
+        <div class="container-2">
+            <div class="description">
+                <h2>Descripción</h2>
+                <p id="descripcion"></p>
+            </div>
+
+            <div class="reserve">
+            <!-- formulario de reservas -->
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/details.js}"></script>
+	<script>
+	    const propiedadId = /*[[${propiedadId}]]*/ null;
+	</script>
+</body>
+</html>
