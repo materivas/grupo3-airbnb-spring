@@ -3,9 +3,10 @@ package com.grupo3.airbnb.dto;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter 
+@NoArgsConstructor @Getter @Setter 
 public class PropiedadDetailDTO {
     private Long id;
 
