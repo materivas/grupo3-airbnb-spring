@@ -41,6 +41,11 @@ public class PropiedadService {
         return convertToPropiedadDetailDTO(propiedad, imageUrls);
     }
 
+    public Propiedad getPropiedad(Long id) {
+        return propiedadRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
+    }
+
     // Métodos de conversión
     private PropiedadListDTO convertToPropiedadListDTO(Propiedad propiedad) {
         String mainImageUrl = propiedad.getImages().isEmpty() ? 
