@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,7 +15,11 @@ public class ReservaDTO {
     private String propiedadTitulo;
     private int nroHuespedes;
     private String huesped; // De momento es un String, pero debería ser un Usuario autenticado
-    private java.sql.Timestamp entrada;
-    private java.sql.Timestamp salida;
+    private LocalDateTime entrada;
+    private LocalDateTime salida;
     private double precioTotal;
+    private String imagenUrl;
+    private long diasEstadia;
+
+
 }

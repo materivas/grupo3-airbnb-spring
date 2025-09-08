@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservaService {
@@ -19,17 +20,17 @@ public class ReservaService {
     @Autowired
     private PropiedadService propiedadService;
 
-    public Reserva createReserva(int nroHuespedes, LocalDate fechaInicio, LocalDate fechaFin, String propiedadId, String usuarioId ) {
+    public Reserva createReserva(int nroHuespedes, LocalDate fechaInicio, LocalDate fechaFin, String propiedadId, String usuarioId) {
         Reserva reserva = new Reserva();
         try {
-            Propiedad p= propiedadService.getPropiedad(Long.valueOf(propiedadId));
+            Propiedad p = propiedadService.getPropiedad(Long.valueOf(propiedadId));
             double precioTotal = p.getPrecioPorNoche() * nroHuespedes * (fechaFin.toEpochDay() - fechaInicio.toEpochDay());
             reserva.setPropiedad(p);
             reserva.setPrecioTotal(precioTotal);
-          } catch ( Exception e) {
-                throw new RuntimeException("Propiedad no encontrada");
-            }
-        reserva.setHuesped( usuarioId);
+        } catch (Exception e) {
+            throw new RuntimeException("Propiedad no encontrada");
+        }
+        reserva.setHuesped(usuarioId);
         reserva.setNroHuespedes(nroHuespedes);
         reserva.setEntrada(java.sql.Timestamp.valueOf(fechaInicio.atStartOfDay()));
         reserva.setSalida(java.sql.Timestamp.valueOf(fechaFin.atStartOfDay()));
@@ -52,20 +53,44 @@ public class ReservaService {
                 .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
     }
 
-    public Reserva getReserva( String usuarioId) {
+    public Reserva getReserva(String usuarioId) {
         return reservaRepository.findByHuesped(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
     }
 
+    //Metodo que agregué para obtener la lista de reservas del usuario
+    public List<ReservaDTO> getReservasByUsuario(String usuarioId) {
+        return reservaRepository.findByHuespedIgnoreCase(usuarioId)
+                .stream()
+                .map(this::convertToReservaDTO)
+                .toList();
+    }
+
+    // Obtener todos los usuarios que tienen reservas
+    public List<String> getUsuariosConReservas() {
+        return reservaRepository.findAll().stream()
+                .map(Reserva::getHuesped)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
     //metodos de conversion
-    public ReservaDTO convertToReservaDTO(Reserva reserva) {
-        return new ReservaDTO(
-                reserva.getPropiedad().getTitulo(),
-                reserva.getNroHuespedes(),
-                reserva.getHuesped(),
-                reserva.getEntrada(),
-                reserva.getSalida(),
-                reserva.getPrecioTotal()
-        );
+    private ReservaDTO convertToReservaDTO(Reserva reserva) {
+        ReservaDTO dto = new ReservaDTO();
+        dto.setPropiedadTitulo(reserva.getPropiedad().getTitulo());
+        dto.setNroHuespedes(reserva.getNroHuespedes());
+        dto.setHuesped(reserva.getHuesped());
+        dto.setEntrada(reserva.getEntrada().toLocalDateTime());
+        dto.setSalida(reserva.getSalida().toLocalDateTime());
+        dto.setPrecioTotal(reserva.getPrecioTotal());
+
+        // Obtiene primera imagen de la propiedad
+        if (!reserva.getPropiedad().getImages().isEmpty()) {
+            dto.setImagenUrl(reserva.getPropiedad().getImages().get(0).getUrl());
+        } else {
+            dto.setImagenUrl("/images/placeholder.jpg");
+        }
+
+        return dto;
     }
 }

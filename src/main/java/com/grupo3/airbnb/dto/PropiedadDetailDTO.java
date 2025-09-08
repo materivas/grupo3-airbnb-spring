@@ -1,12 +1,14 @@
 package com.grupo3.airbnb.dto;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor @Getter @Setter 
+import java.util.List;
+
+@NoArgsConstructor
+@Getter
+@Setter
 public class PropiedadDetailDTO {
     private Long id;
 
@@ -16,10 +18,10 @@ public class PropiedadDetailDTO {
     private Double precioPorNoche;
     private Integer huespedes;
     private Integer habitaciones;
-    private Integer banos;    
+    private Integer banos;
     private Double calificacion;
     private List<String> imageUrls;
- 
+
 
     public PropiedadDetailDTO(Long id,
                               String titulo,

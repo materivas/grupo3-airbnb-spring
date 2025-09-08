@@ -42,10 +42,23 @@ a {
 .navbar-right { justify-content: flex-end; flex: 1; }
 .navbar-center { flex: 2; justify-content: center; }
 
-.navbar-right .nav-link {
+.navbar-right {
     margin-left: 16px;
     font-weight: 500;
     color: #000;
+}
+
+.nav-link {
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+    background-color: #f0f0f0;
 }
 
 /* ====================
@@ -202,5 +215,3 @@ main {
 .logo {
     height: 32px;
 }
-
-

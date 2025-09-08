@@ -1,0 +1,262 @@
+/* ====================
+   GLOBAL & RESET
+==================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    padding-top: 120px;
+    background: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* ====================
+   NAVBAR / HEADER
+==================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    height: 100px;
+    background: white;
+    border-bottom: 1px solid #e2e2e2;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.logo {
+    height: 32px;
+    width: auto;
+}
+
+.nav-link {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+    background-color: #f0f0f0;
+}
+
+/* ====================
+   RESERVA FORM STYLES
+==================== */
+.reserva-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: white;
+    padding: 2rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.title-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.title-section h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.2rem;
+    color: #333;
+}
+
+.title-section p {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-color: #f0265f;
+    outline: none;
+}
+
+.form-group input[type="date"] {
+    padding: 0.7rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+.btn-submit {
+    background: #f0265f;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    min-width: 200px;
+}
+
+.btn-submit:hover {
+    background: #c01e4c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-cancel {
+    background: #ecf0f1;
+    color: #333;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid #ddd;
+    min-width: 120px;
+}
+
+.btn-cancel:hover {
+    background: #d0d3d4;
+    transform: translateY(-2px);
+}
+
+.error-message {
+    background: #fee;
+    color: #c53030;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #fed7d7;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .reserva-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .title-section h1 {
+        font-size: 1.8rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .btn-submit,
+    .btn-cancel {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .reserva-container {
+        padding: 1.2rem;
+    }
+
+    .title-section h1 {
+        font-size: 1.6rem;
+    }
+
+    .title-section p {
+        font-size: 1rem;
+    }
+
+    .form-group input {
+        padding: 0.7rem;
+    }
+
+    .btn-submit,
+    .btn-cancel {
+        padding: 0.9rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* Estilos específicos para inputs de fecha */
+input[type="date"] {
+    position: relative;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+}
+
+/* Placeholder styling */
+::placeholder {
+    color: #999;
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    color: #999;
+}
+
+::-ms-input-placeholder {
+    color: #999;
+}

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservar propiedad</title>
-    <link rel="stylesheet" th:href="@{/css/propiedad-detail.css}">
+    <title>Reservar Propiedad - Airbnb</title>
+    <link rel="stylesheet" th:href="@{/css/reserva.css}">
 </head>
 <body>
 <header class="navbar">
@@ -15,32 +15,47 @@
     </div>
 </header>
 
-<div class="container">
-    <div class="title-section">
-        <h1 id="titulo">Reservar</h1>
+<main>
+    <div class="reserva-container">
+        <div class="title-section">
+            <h1>Reservar Propiedad</h1>
+            <p>Completa los datos para realizar tu reserva</p>
+        </div>
 
+        <!-- Mensaje de error -->
+        <div th:if="${error != null}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
+
+        <form th:action="@{/reservar/{id}(id=${propiedadId})}" method="post">
+            <div class="form-group">
+                <label for="usuario">Nombre de usuario:</label>
+                <input type="text" id="usuario" name="usuario" required
+                       placeholder="Ej: juan123">
+            </div>
+
+            <div class="form-group">
+                <label for="nroHuespedes">Número de huéspedes:</label>
+                <input type="number" id="nroHuespedes" name="nroHuespedes"
+                       min="1" max="10" required placeholder="Máximo 10 personas">
+            </div>
+
+            <div class="form-group">
+                <label for="fechaEntrada">Fecha de entrada:</label>
+                <input type="date" id="fechaEntrada" name="fechaEntrada" required>
+            </div>
+
+            <div class="form-group">
+                <label for="fechaSalida">Fecha de salida:</label>
+                <input type="date" id="fechaSalida" name="fechaSalida" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Confirmar Reserva</button>
+                <a th:href="@{/}" class="btn-cancel">Cancelar</a>
+            </div>
+        </form>
     </div>
-    <form th:action="@{/api/reservas/{propiedadId}(propiedadId=${propiedadId})}" method="post">
-        <div>
-            <label for="usuario">Usuario:</label>
-            <input type="text" id="usuario" name="usuario" required>
-        </div>
-        <div>
-            <label for="nroHuespedes">Número de huéspedes:</label>
-            <!-- deberiamos chequear q el maximo de huespedes sea el permitido por la habitacion-->
-            <input type="number" id="nroHuespedes" name="nroHuespedes" min="1" max="10" required>
-        </div>
-        <div>
-            <label for="fechaEntrada">Fecha de entrada:</label>
-            <input type="date" id="fechaEntrada" name="fechaEntrada" required>
-        </div>
-        <div>
-            <label for="fechaSalida">Fecha de salida:</label>
-            <input type="date" id="fechaSalida" name="fechaSalida" required>
-        </div>
-        <button type="submit">Reservar</button>
-    </form>
-</div>
-
+</main>
 </body>
 </html>

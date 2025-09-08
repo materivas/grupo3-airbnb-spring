@@ -1,3 +1,4 @@
+/*
 package com.grupo3.airbnb.controller;
 
 import com.grupo3.airbnb.dto.ReservaDTO;
@@ -33,16 +34,6 @@ public class ReservaController {
         }
     }
 
-    @PostMapping("/{propiedadId}")
-    public void procesarReserva( HttpServletResponse response,
-            @PathVariable("propiedadId") String propiedadId,
-            @RequestParam("nroHuespedes") int nroHuespedes,
-            @RequestParam("usuario") String usuario,
-            @RequestParam("fechaEntrada") LocalDate fechaEntrada,
-            @RequestParam("fechaSalida") LocalDate fechaSalida,
-            Model model) throws IOException {
-        reservaService.createReserva(nroHuespedes, fechaEntrada, fechaSalida, propiedadId, usuario);
-        model.addAttribute("usuario", usuario);
-        response.sendRedirect("http://localhost:8080/mis-reservas");
-    }
+
 }
+*/

@@ -1,39 +1,94 @@
 package com.grupo3.airbnb.controller;
 
+import com.grupo3.airbnb.dto.ReservaDTO;
+import com.grupo3.airbnb.service.ReservaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 public class WebController {
+
+    @Autowired
+    private ReservaService reservaService;
+
+    // PÁGINA PRINCIPAL
     @GetMapping("/")
     public String home() {
         return "index";
     }
 
+    // MOSTRAR FORMULARIO DE RESERVA
     @GetMapping("/reservar/{propiedadId}")
-    public String reservar( @PathVariable() String propiedadId, Model model) {
+    public String mostrarFormularioReserva(@PathVariable String propiedadId, Model model) {
         model.addAttribute("propiedadId", propiedadId);
         return "reservar";
     }
 
-    @GetMapping("/publicar")
-    public String publicar() {
-        return "publicar"; // Próximo 
+    // PROCESAR FORMULARIO DE RESERVA
+    @PostMapping("/reservar/{propiedadId}")
+    public String procesarReserva(
+            @PathVariable String propiedadId,
+            @RequestParam int nroHuespedes,
+            @RequestParam String usuario,
+            @RequestParam String fechaEntrada,
+            @RequestParam String fechaSalida,
+            Model model) {
+
+        try {
+            // Convertir fechas
+            LocalDate entrada = LocalDate.parse(fechaEntrada);
+            LocalDate salida = LocalDate.parse(fechaSalida);
+
+            // Crear reserva
+            reservaService.createReserva(nroHuespedes, entrada, salida, String.valueOf(Long.parseLong(propiedadId)), usuario);
+
+            // Redirigir a mis reservas
+            return "redirect:/mis-reservas?usuario=" + usuario;
+
+        } catch (Exception e) {
+            // Si hay error, volver al formulario
+            model.addAttribute("error", "Error: " + e.getMessage());
+            model.addAttribute("propiedadId", propiedadId);
+            return "reservar";
+        }
     }
 
+    // MIS RESERVAS
     @GetMapping("/mis-reservas")
-    public String misReservas(@ModelAttribute String usuario, ModelMap model) {
+    public String misReservas(@RequestParam(required = false) String usuario, Model model) {
+
+        if (usuario == null || usuario.trim().isEmpty()) {
+            // Mostrar formulario de búsqueda
+            model.addAttribute("reservas", List.of());
+            return "mis-reservas";
+        }
+
+        // Mostrar reservas del usuario
+        List<ReservaDTO> reservas = reservaService.getReservasByUsuario(usuario);
+        model.addAttribute("reservas", reservas);
         model.addAttribute("usuario", usuario);
-        return "listadoReservas"; // Corregir, tira error cargando el objeto reserva
+        return "mis-reservas";
     }
 
+    // DETALLE DE PROPIEDAD
     @GetMapping("/propiedad/{id}")
     public String propiedadDetail(@PathVariable Long id, Model model) {
         model.addAttribute("propiedadId", id);
         return "propiedad-detail";
     }
+
+    // PUBLICAR (a desarrollar en futuras iteraciones)
+    @GetMapping("/publicar")
+    public String publicar() {
+        return "publicar";
+    }
+
 }

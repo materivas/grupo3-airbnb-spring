@@ -1,24 +1,23 @@
 package com.grupo3.airbnb.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.grupo3.airbnb.dto.PropiedadDetailDTO;
 import com.grupo3.airbnb.dto.PropiedadListDTO;
 import com.grupo3.airbnb.entity.Propiedad;
 import com.grupo3.airbnb.entity.PropiedadImagen;
 import com.grupo3.airbnb.repository.IPropiedadImagenRepository;
 import com.grupo3.airbnb.repository.IPropiedadRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PropiedadService {
 
     @Autowired
     private IPropiedadRepository propiedadRepository;
-    
+
     @Autowired
     private IPropiedadImagenRepository propiedadImagenRepository;
 
@@ -32,12 +31,12 @@ public class PropiedadService {
     public PropiedadDetailDTO getPropiedadDetail(Long id) {
         Propiedad propiedad = propiedadRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
-        
+
         List<PropiedadImagen> imagenes = propiedadImagenRepository.findByPropiedadId(id);
         List<String> imageUrls = imagenes.stream()
                 .map(PropiedadImagen::getUrl)
                 .collect(Collectors.toList());
-        
+
         return convertToPropiedadDetailDTO(propiedad, imageUrls);
     }
 
@@ -48,9 +47,9 @@ public class PropiedadService {
 
     // Métodos de conversión
     private PropiedadListDTO convertToPropiedadListDTO(Propiedad propiedad) {
-        String mainImageUrl = propiedad.getImages().isEmpty() ? 
+        String mainImageUrl = propiedad.getImages().isEmpty() ?
                 null : propiedad.getImages().get(0).getUrl();
-        
+
         return new PropiedadListDTO(
                 propiedad.getId(),
                 propiedad.getTitulo(),

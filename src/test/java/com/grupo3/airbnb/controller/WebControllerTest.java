@@ -12,24 +12,24 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @RunWith(SpringRunner.class)
 @WebMvcTest(WebController.class)
 public class WebControllerTest {
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@Test
-	public void  homeIsOkTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/"))
-		.andExpect(MockMvcResultMatchers.status().isOk())
-		.andExpect(MockMvcResultMatchers.view().name("index"));
-	}
-	
-	
-	@Test
-	public void propertyDetailIsOkTest() throws Exception {
-	    mockMvc.perform(MockMvcRequestBuilders.get("/propiedad/1"))
-	        .andExpect(MockMvcResultMatchers.status().isOk())
-	        .andExpect(MockMvcResultMatchers.view().name("propiedad-detail"))
-	        .andExpect(MockMvcResultMatchers.model().attribute("propiedadId", 1L));
-	}
+    @Test
+    public void homeIsOkTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("index"));
+    }
+
+
+    @Test
+    public void propertyDetailIsOkTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/propiedad/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("propiedad-detail"))
+                .andExpect(MockMvcResultMatchers.model().attribute("propiedadId", 1L));
+    }
 
 
 }
