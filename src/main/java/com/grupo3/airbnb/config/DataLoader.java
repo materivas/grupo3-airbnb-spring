@@ -1,13 +1,12 @@
 package com.grupo3.airbnb.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
 import com.grupo3.airbnb.entity.Propiedad;
 import com.grupo3.airbnb.entity.PropiedadImagen;
 import com.grupo3.airbnb.repository.IPropiedadImagenRepository;
 import com.grupo3.airbnb.repository.IPropiedadRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -30,18 +29,18 @@ public class DataLoader implements CommandLineRunner {
             prop1.setHuespedes(4);
             prop1.setHabitaciones(2);
             prop1.setBanos(1);
-            
+
             // Guardar propiedad primero
             propiedadRepository.save(prop1);
 
             // Crear y asociar imagen
             PropiedadImagen imgBase = new PropiedadImagen();
-            imgBase.setUrl("/images/placeholder.jpg"); 
+            imgBase.setUrl("/images/placeholder.jpg");
             imgBase.setPropiedad(prop1);
             imagenRepository.save(imgBase);
 
             prop1.getImages().add(imgBase);
-            propiedadRepository.save(prop1); 
+            propiedadRepository.save(prop1);
 
             // Propiedad 2
             Propiedad p1 = new Propiedad();
@@ -58,7 +57,7 @@ public class DataLoader implements CommandLineRunner {
             img1.setUrl("/images/propiedad1.jpeg");
             img1.setPropiedad(p1);
             imagenRepository.save(img1);
-            
+
             p1.getImages().add(img1);
             propiedadRepository.save(p1);
 
@@ -77,7 +76,7 @@ public class DataLoader implements CommandLineRunner {
             img2.setUrl("/images/propiedad2.avif");
             img2.setPropiedad(p2);
             imagenRepository.save(img2);
-            
+
             p2.getImages().add(img2);
             propiedadRepository.save(p2);
 
@@ -96,7 +95,7 @@ public class DataLoader implements CommandLineRunner {
             img3.setUrl("/images/propiedad3.avif");
             img3.setPropiedad(p3);
             imagenRepository.save(img3);
-            
+
             p3.getImages().add(img3);
             propiedadRepository.save(p3);
 

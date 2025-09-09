@@ -37,6 +37,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Descripción
     document.getElementById("descripcion").textContent = prop.descripcion;
 
+    // Reserva
+     document.getElementById('reservarBtn').addEventListener('click', function() {
+        if (id) {
+            window.location.href = '/reservar/' + id;
+        }
+    });
+
     /* Botón compartir
     document.getElementById("share-btn").onclick = () => {
       if (navigator.share) {
