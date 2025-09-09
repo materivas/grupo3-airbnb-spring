@@ -83,6 +83,7 @@ public class ReservaService {
         dto.setEntrada(reserva.getEntrada().toLocalDateTime());
         dto.setSalida(reserva.getSalida().toLocalDateTime());
         dto.setPrecioTotal(reserva.getPrecioTotal());
+        dto.setDiasEstadia(calcularDiasEstadia(reserva));
 
         // Obtiene primera imagen de la propiedad
         if (!reserva.getPropiedad().getImages().isEmpty()) {
@@ -92,5 +93,10 @@ public class ReservaService {
         }
 
         return dto;
+    }
+
+    public int calcularDiasEstadia(Reserva reserva) {
+        long dias = reserva.getSalida().toLocalDateTime().toLocalDate().toEpochDay() - reserva.getEntrada().toLocalDateTime().toLocalDate().toEpochDay();
+        return (int) dias;
     }
 }
