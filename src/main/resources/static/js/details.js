@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Descripción
     document.getElementById("descripcion").textContent = prop.descripcion;
 
-    //rReserva
+    // Reserva
      document.getElementById('reservarBtn').addEventListener('click', function() {
         if (id) {
             window.location.href = '/reservar/' + id;

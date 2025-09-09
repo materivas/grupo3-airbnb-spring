@@ -58,4 +58,22 @@
     </div>
 </main>
 </body>
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+    const fechaEntrada = document.getElementById('fechaEntrada').value;
+    const fechaSalida = document.getElementById('fechaSalida').value;
+    const hoy = new Date().toISOString().split('T')[0];
+
+    if (fechaEntrada < hoy) {
+        alert('La fecha de entrada no puede ser en el pasado.');
+        e.preventDefault();
+        return;
+    }
+    if (fechaSalida <= fechaEntrada) {
+        alert('La fecha de salida debe ser posterior a la fecha de entrada.');
+        e.preventDefault();
+        return;
+    }
+});
+</script>
 </html>
