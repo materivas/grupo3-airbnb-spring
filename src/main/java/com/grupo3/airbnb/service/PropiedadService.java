@@ -5,9 +5,13 @@ import com.grupo3.airbnb.dto.PropiedadListDTO;
 import com.grupo3.airbnb.entity.Propiedad;
 import com.grupo3.airbnb.entity.PropiedadImagen;
 import com.grupo3.airbnb.repository.IPropiedadRepository;
+import com.grupo3.airbnb.repository.IReservaRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +20,8 @@ public class PropiedadService {
 
     @Autowired
     private IPropiedadRepository propiedadRepository;
+    @Autowired
+    private IReservaRepository reservaRepository;
 
     // Método nuevo
     public Propiedad getPropiedad(Long id) {
@@ -23,26 +29,43 @@ public class PropiedadService {
                 .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
     }
 
-    public List<PropiedadListDTO> getAllPropiedades(Double precioMin, Double precioMax, String moneda) {
-        List<Propiedad> propiedades = propiedadRepository.findAll();
+    public List<PropiedadListDTO> getAllPropiedades(Double precioMin, Double precioMax, String moneda, LocalDate fechaMin, LocalDate fechaMax) {
 
-        return propiedades.stream()
-                .filter(propiedad -> {
-                    boolean matchesPrice = true;
-                    if (precioMin != null) {
-                        matchesPrice = propiedad.getPrecioPorNoche() >= precioMin;
-                    }
-                    if (precioMax != null && matchesPrice) {
-                        matchesPrice = propiedad.getPrecioPorNoche() <= precioMax;
-                    }
-                    if (moneda != null && !moneda.isEmpty()) {
-                        matchesPrice = matchesPrice && moneda.equals(propiedad.getMoneda());
-                    }
-                    return matchesPrice;
-                })
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
+		List<Propiedad> propiedades = propiedadRepository.findAll();
+		
+		return propiedades.stream().filter(propiedad -> {
+			
+			// --- Filtro por precio mínimo ---
+			if (precioMin != null && propiedad.getPrecioPorNoche() < precioMin) {
+				return false;
+			}
+			
+			// --- Filtro por precio máximo ---
+			if (precioMax != null && propiedad.getPrecioPorNoche() > precioMax) {
+				return false;
+			}
+			
+			// --- Filtro por moneda ---
+			if (moneda != null && !moneda.isEmpty() && !moneda.equals(propiedad.getMoneda())) {
+				return false;
+			}
+			
+			// --- Filtro por disponibilidad ---
+			if (fechaMin != null || fechaMax != null) {
+				LocalDate start = fechaMin != null ? fechaMin : fechaMax;
+				LocalDate end = fechaMax != null ? fechaMax : fechaMin;
+				
+				if (!isPropiedadDisponible(propiedad.getId(), start, end)) {
+					return false;
+				}
+			}
+			
+			return true; // Pasa todos los filtros
+		})
+		.map(this::convertToDTO)
+		.collect(Collectors.toList());
+	}
+
 
     private PropiedadListDTO convertToDTO(Propiedad propiedad) {
         return new PropiedadListDTO(
@@ -79,4 +102,12 @@ public class PropiedadService {
                 propiedad.getMoneda()
         );
     }
+    
+    // Verifica si una propiedad está disponible en un rango de fechas
+   private boolean isPropiedadDisponible(Long propiedadId, LocalDate fechaInicio, LocalDate fechaFin) {
+       Timestamp inicioTS = Timestamp.valueOf(fechaInicio.atStartOfDay());
+       Timestamp finTS = Timestamp.valueOf(fechaFin.atTime(23,59,59));
+       return !reservaRepository.existsReservaWithPassedDates(propiedadId, inicioTS, finTS);
+   }
+   
 }

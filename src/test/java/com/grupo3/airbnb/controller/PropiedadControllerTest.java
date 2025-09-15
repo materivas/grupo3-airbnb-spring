@@ -28,20 +28,20 @@ public class PropiedadControllerTest {
     @Test
     public void getAllPropertiesIsOkTest() {
         // Cambiar para incluir los parámetros nuevos
-        Mockito.when(propiedadService.getAllPropiedades(null, null, null)).thenReturn(new ArrayList<PropiedadListDTO>());
+        Mockito.when(propiedadService.getAllPropiedades(null, null, null, null, null)).thenReturn(new ArrayList<PropiedadListDTO>());
 
         // Cambiar para incluir los parámetros nuevos
-        ResponseEntity<List<PropiedadListDTO>> actualResult = propiedadController.getAllPropiedades(null, null, null);
+        ResponseEntity<List<PropiedadListDTO>> actualResult = propiedadController.getAllPropiedades(null, null, null, null, null);
         assertEquals(new ArrayList<>(), actualResult.getBody());
     }
 
     @Test
     public void getAllPropertiesThrowsExceptionTest() {
         // Cambiar para incluir los parámetros nuevos
-        Mockito.when(propiedadService.getAllPropiedades(null, null, null)).thenThrow(new RuntimeException());
+        Mockito.when(propiedadService.getAllPropiedades(null, null, null, null, null)).thenThrow(new RuntimeException());
 
         // Cambiar para incluir los parámetros nuevos
-        ResponseEntity<List<PropiedadListDTO>> actualResult = propiedadController.getAllPropiedades(null, null, null);
+        ResponseEntity<List<PropiedadListDTO>> actualResult = propiedadController.getAllPropiedades(null, null, null, null, null);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actualResult.getStatusCode());
         assertThat(actualResult.getBody()).isNull();
