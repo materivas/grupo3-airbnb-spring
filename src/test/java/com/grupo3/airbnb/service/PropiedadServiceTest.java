@@ -5,6 +5,8 @@ import com.grupo3.airbnb.dto.PropiedadListDTO;
 import com.grupo3.airbnb.entity.Propiedad;
 import com.grupo3.airbnb.entity.PropiedadImagen;
 import com.grupo3.airbnb.repository.IPropiedadRepository;
+import com.grupo3.airbnb.repository.IReservaRepository;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +29,9 @@ public class PropiedadServiceTest {
 
     @Mock
     private IPropiedadRepository propiedadRepository;
-
+    @Mock
+    private IReservaRepository reservaRepository;
+    
     @InjectMocks
     private PropiedadService propiedadService;
 
@@ -62,41 +67,72 @@ public class PropiedadServiceTest {
 
     @Test
     public void getAllPropiedades_WithoutFilters_ReturnsAllProperties() {
-        // Arrange
         when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
 
-        // Act
-        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null);
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, null, null);
 
-        // Assert
         assertEquals(2, result.size());
     }
 
     @Test
     public void getAllPropiedades_WithPriceFilter_ReturnsFilteredProperties() {
-        // Arrange
         when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
 
-        // Act
-        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(100.0, 200.0, null);
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(100.0, 200.0, null, null, null);
 
-        // Assert
         assertEquals(1, result.size());
         assertEquals("Casa en la playa", result.get(0).getTitulo());
     }
 
     @Test
     public void getAllPropiedades_WithCurrencyFilter_ReturnsFilteredProperties() {
-        // Arrange
         when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
 
-        // Act
-        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, "USD");
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, "USD", null, null);
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void getAllPropiedades_WithDatesRangeFilter_ReturnsFilteredProperties() {
+        when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
+        when(reservaRepository.existsReservaWithPassedDates(any(), any(), any())).thenReturn(false);
+
+        LocalDate fixedStart = LocalDate.of(2025, 9, 15);
+        LocalDate fixedEnd = fixedStart.plusDays(5);
+
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, fixedStart, fixedEnd);
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void getAllPropiedades_WithOnlyEndDate_ReturnsFilteredProperties() {
+        // Arrange
+        when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
+        when(reservaRepository.existsReservaWithPassedDates(any(), any(), any())).thenReturn(false);
+
+        LocalDate endDate = LocalDate.of(2025, 9, 20);
+
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, null, endDate);
 
         // Assert
         assertEquals(2, result.size());
     }
 
+    @Test
+    public void getAllPropiedades_WithOnlyStartDate_ReturnsFilteredProperties() {
+        // Arrange
+        when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
+        when(reservaRepository.existsReservaWithPassedDates(any(), any(), any())).thenReturn(false);
+
+        LocalDate startDate = LocalDate.of(2025, 9, 15);
+
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, startDate, null);
+
+        assertEquals(2, result.size());
+    }
+    
     @Test
     public void getPropiedadDetail_ValidId_ReturnsPropertyDetail() {
         // Arrange
