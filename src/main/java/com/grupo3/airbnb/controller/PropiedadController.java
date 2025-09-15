@@ -3,7 +3,6 @@ package com.grupo3.airbnb.controller;
 import com.grupo3.airbnb.dto.PropiedadDetailDTO;
 import com.grupo3.airbnb.dto.PropiedadListDTO;
 import com.grupo3.airbnb.service.PropiedadService;
-import com.grupo3.airbnb.service.ReservaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

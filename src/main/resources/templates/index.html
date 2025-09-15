@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
-        /* Estilos de filtros y tarjetas */
+        /* Estilos para los filtros que se integran con el diseño existente */
         .filtros-container {
             background: white;
             padding: 1.5rem;
@@ -85,7 +85,7 @@
 <main>
     <h2>Propiedades disponibles</h2>
 
-    <!-- Filtros estilo Airbnb -->
+    <!-- Filtros - Integrados con el diseño existente -->
     <div class="filtros-container">
 
         <!-- Filtro de fechas -->
@@ -110,7 +110,7 @@
         <div>
             <label for="moneda">Moneda</label>
             <select id="moneda">
-                <option value="">Todas</option>
+                <option value="">Todas las monedas</option>
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
                 <option value="GBP">GBP</option>
@@ -208,6 +208,7 @@
         });
     }
 
+    // Modificamos la función original cargarPropiedades para que use la misma función de renderizado
     async function cargarPropiedades() {
         try {
             const respuesta = await fetch('/api/propiedades');
@@ -220,6 +221,7 @@
         }
     }
 
+    // Llamamos a cargarPropiedades al cargar la página
     document.addEventListener('DOMContentLoaded', () => {
         cargarPropiedades();
 
