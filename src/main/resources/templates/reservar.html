@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservar Propiedad - Airbnb</title>
     <link rel="stylesheet" th:href="@{/css/reserva.css}">
+    <style>
+        /* Estilos específicos para el formulario de tarjeta que mantienen la estética */
+        #formularioTarjeta {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #e0e0e0;
+        }
+
+        .form-group-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-group-row .form-group {
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
 <header class="navbar">
@@ -27,7 +46,7 @@
             <p th:text="${error}"></p>
         </div>
 
-        <form th:action="@{/reservar/{id}(id=${propiedadId})}" method="post">
+        <form th:action="@{/reservar/{id}(id=${propiedadId})}" method="post" onsubmit="return validarFormulario()">
             <div class="form-group">
                 <label for="usuario">Nombre de usuario:</label>
                 <input type="text" id="usuario" name="usuario" required
@@ -50,6 +69,45 @@
                 <input type="date" id="fechaSalida" name="fechaSalida" required>
             </div>
 
+            <!-- Método de pago - Nuevo -->
+            <div class="form-group">
+                <label for="metodoPago">Método de Pago</label>
+                <select id="metodoPago" name="metodoPago" required onchange="mostrarFormularioTarjeta()">
+                    <option value="">Seleccione un método de pago</option>
+                    <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="transferencia">Transferencia Bancaria</option>
+                </select>
+            </div>
+
+            <!-- Formulario de tarjeta (solo visible cuando se selecciona tarjeta) -->
+            <div id="formularioTarjeta" style="display: none;">
+                <div class="form-group">
+                    <label for="numeroTarjeta">Número de Tarjeta</label>
+                    <input type="text" id="numeroTarjeta" name="numeroTarjeta"
+                           placeholder="1234 5678 9012 3456" oninput="formatoNumeroTarjeta(this)">
+                </div>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="fechaExpiracion">Fecha de Expiración</label>
+                        <input type="text" id="fechaExpiracion" name="fechaExpiracion"
+                               placeholder="MM/AA" maxlength="5" oninput="formatoFechaExpiracion(this)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="4">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="titularTarjeta">Nombre del Titular</label>
+                    <input type="text" id="titularTarjeta" name="titularTarjeta"
+                           placeholder="Como aparece en la tarjeta">
+                </div>
+            </div>
+
             <div class="form-actions">
                 <button type="submit" class="btn-submit">Confirmar Reserva</button>
                 <a th:href="@{/}" class="btn-cancel">Cancelar</a>
@@ -59,21 +117,124 @@
 </main>
 </body>
 <script>
+    // Validaciones de fecha existentes
     document.querySelector('form').addEventListener('submit', function(e) {
-    const fechaEntrada = document.getElementById('fechaEntrada').value;
-    const fechaSalida = document.getElementById('fechaSalida').value;
-    const hoy = new Date().toISOString().split('T')[0];
+        const fechaEntrada = document.getElementById('fechaEntrada').value;
+        const fechaSalida = document.getElementById('fechaSalida').value;
+        const hoy = new Date().toISOString().split('T')[0];
 
-    if (fechaEntrada < hoy) {
-        alert('La fecha de entrada no puede ser en el pasado.');
-        e.preventDefault();
-        return;
+        if (fechaEntrada < hoy) {
+            alert('La fecha de entrada no puede ser en el pasado.');
+            e.preventDefault();
+            return;
+        }
+        if (fechaSalida <= fechaEntrada) {
+            alert('La fecha de salida debe ser posterior a la fecha de entrada.');
+            e.preventDefault();
+            return;
+        }
+    });
+
+    // Funciones para el método de pago
+    function mostrarFormularioTarjeta() {
+        const metodoPago = document.getElementById('metodoPago').value;
+        const formularioTarjeta = document.getElementById('formularioTarjeta');
+        formularioTarjeta.style.display = metodoPago === 'tarjeta' ? 'block' : 'none';
     }
-    if (fechaSalida <= fechaEntrada) {
-        alert('La fecha de salida debe ser posterior a la fecha de entrada.');
-        e.preventDefault();
-        return;
+
+    function formatoNumeroTarjeta(input) {
+        let value = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formattedValue = '';
+
+        for (let i = 0; i < value.length; i++) {
+            if (i > 0 && i % 4 === 0) formattedValue += ' ';
+            formattedValue += value[i];
+        }
+
+        input.value = formattedValue;
     }
-});
+
+    function formatoFechaExpiracion(input) {
+        let value = input.value.replace(/\D/g, '');
+
+        if (value.length > 2) {
+            input.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+    }
+
+    function validarNumeroTarjetaLuhn(numero) {
+        let sum = 0;
+        let shouldDouble = false;
+        let numStr = numero.replace(/\s/g, '');
+
+        for (let i = numStr.length - 1; i >= 0; i--) {
+            let digit = parseInt(numStr.charAt(i));
+
+            if (shouldDouble) {
+                if ((digit *= 2) > 9) digit -= 9;
+            }
+
+            sum += digit;
+            shouldDouble = !shouldDouble;
+        }
+
+        return (sum % 10) === 0;
+    }
+
+    function validarFechaExpiracion(fecha) {
+        if (!/^\d{2}\/\d{2}$/.test(fecha)) return false;
+
+        const [mes, anio] = fecha.split('/').map(Number);
+        const ahora = new Date();
+        const añoActual = ahora.getFullYear() % 100;
+        const mesActual = ahora.getMonth() + 1;
+
+        // Validar mes (1-12)
+        if (mes < 1 || mes > 12) return false;
+
+        // Validar que no esté vencida
+        if (anio < añoActual) return false;
+        if (anio === añoActual && mes < mesActual) return false;
+
+        return true;
+    }
+
+    function validarFormulario() {
+        const metodoPago = document.getElementById('metodoPago').value;
+
+        if (metodoPago === 'tarjeta') {
+            const numeroTarjeta = document.getElementById('numeroTarjeta').value;
+            const fechaExpiracion = document.getElementById('fechaExpiracion').value;
+            const cvv = document.getElementById('cvv').value;
+            const titular = document.getElementById('titularTarjeta').value;
+
+            if (!numeroTarjeta || !fechaExpiracion || !cvv || !titular) {
+                alert('Por favor, complete todos los campos de la tarjeta.');
+                return false;
+            }
+
+            if (!validarNumeroTarjetaLuhn(numeroTarjeta)) {
+                alert('Número de tarjeta inválido');
+                return false;
+            }
+
+            if (!validarFechaExpiracion(fechaExpiracion)) {
+                alert('Fecha de expiración inválida o tarjeta vencida');
+                return false;
+            }
+
+            if (!/^\d{3,4}$/.test(cvv)) {
+                alert('CVV inválido');
+                return false;
+            }
+
+            if (titular.trim().length < 3) {
+                alert('Nombre del titular inválido');
+                return false;
+            }
+        }
+
+        return true;
+    }
 </script>
 </html>

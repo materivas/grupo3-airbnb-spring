@@ -24,12 +24,26 @@ public class Propiedad {
     private Integer habitaciones;
     private Integer banos;
     private Double calificacion;
+    private String moneda = "USD"; // Nuevo campo para la moneda
 
     @OneToMany(mappedBy = "propiedad", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PropiedadImagen> images = new ArrayList<>();
 
+    // Constructores, getters y setters
+    public Propiedad() {
+    }
 
-    // Añadir usuarios/hosts/reservas proximamente
-
-
+    public Propiedad(String titulo, String descripcion, String ubicacion,
+                     Double precioPorNoche, Integer huespedes, Integer habitaciones,
+                     Integer banos, Double calificacion, String moneda) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.ubicacion = ubicacion;
+        this.precioPorNoche = precioPorNoche;
+        this.huespedes = huespedes;
+        this.habitaciones = habitaciones;
+        this.banos = banos;
+        this.calificacion = calificacion;
+        this.moneda = moneda;
+    }
 }

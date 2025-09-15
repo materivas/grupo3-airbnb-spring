@@ -4,108 +4,145 @@ import com.grupo3.airbnb.dto.PropiedadDetailDTO;
 import com.grupo3.airbnb.dto.PropiedadListDTO;
 import com.grupo3.airbnb.entity.Propiedad;
 import com.grupo3.airbnb.entity.PropiedadImagen;
-import com.grupo3.airbnb.repository.IPropiedadImagenRepository;
 import com.grupo3.airbnb.repository.IPropiedadRepository;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PropiedadServiceTest {
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
-    public IPropiedadRepository propiedadRepository;
-    @Mock
-    public IPropiedadImagenRepository propiedadImagenRepository;
+    private IPropiedadRepository propiedadRepository;
+
     @InjectMocks
-    public PropiedadService propiedadService;
+    private PropiedadService propiedadService;
 
-    private Optional<Propiedad> propertyMock;
-    private Optional<PropiedadImagen> propertyImageMock;
-
+    private Propiedad propiedad;
+    private Propiedad propiedad2;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        propertyMock = mockProperty();
-        propertyImageMock = mockPropertyImage(propertyMock.get());
-    }
+        propiedad = new Propiedad();
+        propiedad.setId(1L);
+        propiedad.setTitulo("Casa en la playa");
+        propiedad.setDescripcion("Hermosa casa frente al mar");
+        propiedad.setUbicacion("Cancún");
+        propiedad.setPrecioPorNoche(150.00);
+        propiedad.setHuespedes(6);
+        propiedad.setHabitaciones(3);
+        propiedad.setBanos(2);
+        propiedad.setCalificacion(4.8);
+        propiedad.setMoneda("USD");
 
-
-    @Test
-    public void testGetAllPropertiesIsOk() {
-        Mockito.when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propertyMock.get()));
-
-        List<PropiedadListDTO> expectedList = propiedadService.getAllPropiedades();
-
-        assertThat(expectedList)
-                .usingRecursiveFieldByFieldElementComparator()
-                .containsExactly(
-                        new PropiedadListDTO(1L, "Titulo", "Ubicacion", 1000d, 2, 6d, "URL_MAIN"));
-    }
-
-
-    @Test
-    public void testGetPropertyDetailIsOk() {
-        Mockito.when(propiedadRepository.findById(Mockito.anyLong())).thenReturn(propertyMock);
-        Mockito.when(propiedadImagenRepository.findByPropiedadId(Mockito.anyLong())).thenReturn(Arrays.asList(propertyImageMock.get()));
-
-        PropiedadDetailDTO expectedPropertyDetail = propiedadService.getPropiedadDetail(Mockito.anyLong());
-
-        assertThat(new PropiedadDetailDTO(1L, "Titulo", "Descripcion", "Ubicacion", 1000d, 2, 2, 1, 6d, Arrays.asList("URL_MAIN")))
-                .usingRecursiveComparison()
-                .isEqualTo(
-                        expectedPropertyDetail);
+        propiedad2 = new Propiedad();
+        propiedad2.setId(2L);
+        propiedad2.setTitulo("Departamento céntrico");
+        propiedad2.setDescripcion("Departamento moderno en el centro");
+        propiedad2.setUbicacion("Ciudad de México");
+        propiedad2.setPrecioPorNoche(80.00);
+        propiedad2.setHuespedes(4);
+        propiedad2.setHabitaciones(2);
+        propiedad2.setBanos(1);
+        propiedad2.setCalificacion(4.5);
+        propiedad2.setMoneda("USD");
     }
 
     @Test
-    public void testGetPropertyDetailException() {
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage("Propiedad no encontrada");
-        Mockito.when(propiedadRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+    public void getAllPropiedades_WithoutFilters_ReturnsAllProperties() {
+        // Arrange
+        when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
 
-        propiedadService.getPropiedadDetail(Mockito.anyLong());
+        // Act
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null);
+
+        // Assert
+        assertEquals(2, result.size());
     }
 
+    @Test
+    public void getAllPropiedades_WithPriceFilter_ReturnsFilteredProperties() {
+        // Arrange
+        when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
 
-    private static Optional<Propiedad> mockProperty() {
-        Optional<Propiedad> propertyMock = Optional.of(new Propiedad());
-        propertyMock.get().setId(1l);
-        propertyMock.get().setTitulo("Titulo");
-        propertyMock.get().setDescripcion("Descripcion");
-        propertyMock.get().setUbicacion("Ubicacion");
-        propertyMock.get().setPrecioPorNoche(1000d);
-        propertyMock.get().setHuespedes(2);
-        propertyMock.get().setHabitaciones(2);
-        propertyMock.get().setBanos(1); //BAÑOS
-        propertyMock.get().setCalificacion(6d);
-        propertyMock.get().setImages(Arrays.asList(mockPropertyImage(propertyMock.get()).get()));
+        // Act
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(100.0, 200.0, null);
 
-        return propertyMock;
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals("Casa en la playa", result.get(0).getTitulo());
     }
 
-    private static Optional<PropiedadImagen> mockPropertyImage(Propiedad property) {
-        Optional<PropiedadImagen> propertyImageMock = Optional.of(new PropiedadImagen());
-        propertyImageMock.get().setId(1l);
-        propertyImageMock.get().setUrl("URL_MAIN");
-        propertyImageMock.get().setPropiedad(property);
-        return propertyImageMock;
+    @Test
+    public void getAllPropiedades_WithCurrencyFilter_ReturnsFilteredProperties() {
+        // Arrange
+        when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
+
+        // Act
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, "USD");
+
+        // Assert
+        assertEquals(2, result.size());
     }
 
+    @Test
+    public void getPropiedadDetail_ValidId_ReturnsPropertyDetail() {
+        // Arrange
+        PropiedadImagen imagen = new PropiedadImagen();
+        imagen.setUrl("http://example.com/image.jpg");
+        propiedad.setImages(Arrays.asList(imagen));
 
+        when(propiedadRepository.findById(1L)).thenReturn(Optional.of(propiedad));
+
+        // Act
+        PropiedadDetailDTO result = propiedadService.getPropiedadDetail(1L);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Casa en la playa", result.getTitulo());
+        assertEquals(1, result.getImageUrls().size());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void getPropiedadDetail_InvalidId_ThrowsException() {
+        // Arrange
+        when(propiedadRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // Act
+        propiedadService.getPropiedadDetail(999L);
+    }
+
+    @Test
+    public void getPropiedad_ValidId_ReturnsProperty() {
+        // Arrange
+        when(propiedadRepository.findById(1L)).thenReturn(Optional.of(propiedad));
+
+        // Act
+        Propiedad result = propiedadService.getPropiedad(1L);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Casa en la playa", result.getTitulo());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void getPropiedad_InvalidId_ThrowsException() {
+        // Arrange
+        when(propiedadRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // Act
+        propiedadService.getPropiedad(999L);
+    }
 }

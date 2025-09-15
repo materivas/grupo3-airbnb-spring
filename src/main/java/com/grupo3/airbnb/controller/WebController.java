@@ -40,12 +40,25 @@ public class WebController {
             @RequestParam String usuario,
             @RequestParam String fechaEntrada,
             @RequestParam String fechaSalida,
+            @RequestParam String metodoPago,
+            @RequestParam(required = false) String numeroTarjeta,
+            @RequestParam(required = false) String fechaExpiracion,
+            @RequestParam(required = false) String cvv,
+            @RequestParam(required = false) String titularTarjeta,
             Model model) {
 
         try {
             // Convertir fechas
             LocalDate entrada = LocalDate.parse(fechaEntrada);
             LocalDate salida = LocalDate.parse(fechaSalida);
+
+            // Validar método de pago si es tarjeta
+            if ("tarjeta".equals(metodoPago)) {
+                if (numeroTarjeta == null || numeroTarjeta.trim().isEmpty()) {
+                    throw new IllegalArgumentException("Número de tarjeta requerido");
+                }
+                // Aquí podrías agregar más validaciones para la tarjeta
+            }
 
             // Crear reserva
             reservaService.createReserva(nroHuespedes, entrada, salida, String.valueOf(Long.parseLong(propiedadId)), usuario);
@@ -90,5 +103,4 @@ public class WebController {
     public String publicar() {
         return "publicar";
     }
-
 }

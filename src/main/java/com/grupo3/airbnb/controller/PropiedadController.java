@@ -19,16 +19,18 @@ public class PropiedadController {
     private PropiedadService propiedadService;
 
     @GetMapping
-    public ResponseEntity<List<PropiedadListDTO>> getAllPropiedades() {
+    public ResponseEntity<List<PropiedadListDTO>> getAllPropiedades(
+            @RequestParam(required = false) Double precioMin,
+            @RequestParam(required = false) Double precioMax,
+            @RequestParam(required = false) String moneda) {
         try {
-            List<PropiedadListDTO> propiedades = propiedadService.getAllPropiedades();
+            List<PropiedadListDTO> propiedades = propiedadService.getAllPropiedades(precioMin, precioMax, moneda);
             return ResponseEntity.ok(propiedades);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    // GET: /api/propiedades/{id} - Ver detalles de una propiedad específica
     @GetMapping("/{id}")
     public ResponseEntity<PropiedadDetailDTO> getPropiedadDetail(@PathVariable Long id) {
         try {
@@ -40,6 +42,4 @@ public class PropiedadController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-
 }

@@ -11,7 +11,6 @@ import java.util.List;
 @Setter
 public class PropiedadDetailDTO {
     private Long id;
-
     private String titulo;
     private String descripcion;
     private String ubicacion;
@@ -21,18 +20,11 @@ public class PropiedadDetailDTO {
     private Integer banos;
     private Double calificacion;
     private List<String> imageUrls;
+    private String moneda; // Nuevo campo
 
-
-    public PropiedadDetailDTO(Long id,
-                              String titulo,
-                              String descripcion,
-                              String ubicacion,
-                              Double precioPorNoche,
-                              Integer huespedes,
-                              Integer habitaciones,
-                              Integer banos,
-                              Double calificacion,
-                              List<String> imageUrls) {
+    public PropiedadDetailDTO(Long id, String titulo, String descripcion, String ubicacion,
+                              Double precioPorNoche, Integer huespedes, Integer habitaciones,
+                              Integer banos, Double calificacion, List<String> imageUrls, String moneda) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -41,6 +33,8 @@ public class PropiedadDetailDTO {
         this.huespedes = huespedes;
         this.habitaciones = habitaciones;
         this.banos = banos;
+        this.calificacion = calificacion;
         this.imageUrls = imageUrls;
+        this.moneda = moneda;
     }
 }
