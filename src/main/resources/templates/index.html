@@ -1,47 +1,44 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Airbnb - Propiedades Disponibles</title>
     <link rel="icon" th:href="@{/images/airbnb-logo-mini.jpg}">
     <link rel="stylesheet" th:href="@{/css/index.css}"/>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-          rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-          integrity="sha512-PoP1RQZHy+QTm+fFeN+7UcM0kR4Yv7CWnVaRPcP3gD28hEAG6NQXPPoXsIgIABeih8RPYHzqXcoAA2dku+6aew=="
-          crossorigin="anonymous" referrerpolicy>
+    <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
-        /* Estilos para los filtros que se integran con el diseño existente */
+        /* Estilos de filtros y tarjetas */
         .filtros-container {
             background: white;
             padding: 1.5rem;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
-            margin-top: 1rem;
-        }
-
-        .filtro-precio {
             display: flex;
-            gap: 1rem;
-            align-items: end;
             flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
         }
-
-        .filtro-precio input,
-        .filtro-precio select {
+        .filtros-container > div {
+            display: flex;
+            flex-direction: column;
+        }
+        .filtros-container label {
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+        .filtros-container input, .filtros-container select {
             padding: 0.8rem;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 1rem;
             font-family: 'Poppins', sans-serif;
         }
-
         .btn-filtrar, .btn-reset {
             padding: 0.8rem 1.5rem;
             border: none;
@@ -50,27 +47,31 @@
             font-weight: 600;
             font-family: 'Poppins', sans-serif;
         }
-
-        .btn-filtrar {
-            background: #FF385C;
-            color: white;
+        .btn-filtrar { background: #FF385C; color: white; }
+        .btn-reset { background: #ecf0f1; color: #333; }
+        .btn-filtrar:hover { background: #e61e4d; }
+        .btn-reset:hover { background: #d0d3d4; }
+        #contenedor-propiedades {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
         }
-
-        .btn-reset {
-            background: #ecf0f1;
-            color: #333;
+        .card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
         }
-
-        .btn-filtrar:hover {
-            background: #e61e4d;
-        }
-
-        .btn-reset:hover {
-            background: #d0d3d4;
-        }
+        .card:hover { transform: scale(1.03); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-content { padding: 1rem; }
+        .card-header span { font-size: 0.9rem; color: #555; }
+        .card-title { margin: 0.3rem 0; font-size: 1.2rem; }
+        .card-price { margin-top: 0.5rem; font-weight: 600; }
+        .card-guests small { color: #555; }
     </style>
 </head>
-
 <body>
 <header class="navbar">
     <div class="navbar-left">
@@ -84,51 +85,80 @@
 <main>
     <h2>Propiedades disponibles</h2>
 
-    <!-- Filtros - Integrados con el diseño existente -->
+    <!-- Filtros estilo Airbnb -->
     <div class="filtros-container">
-        <h3>Filtrar por precio</h3>
-        <div class="filtro-precio">
-            <div>
-                <label for="precioMin">Precio mínimo</label>
-                <input type="number" id="precioMin" placeholder="Mínimo" min="0">
-            </div>
-            <div>
-                <label for="precioMax">Precio máximo</label>
-                <input type="number" id="precioMax" placeholder="Máximo" min="0">
-            </div>
-            <div>
-                <label for="moneda">Moneda</label>
-                <select id="moneda">
-                    <option value="">Todas las monedas</option>
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
-                </select>
-            </div>
-            <button onclick="aplicarFiltros()" class="btn-filtrar">Aplicar filtros</button>
-            <button onclick="resetFiltros()" class="btn-reset">Resetear</button>
+
+        <!-- Filtro de fechas -->
+        <div>
+            <label for="checkIn">Check-in</label>
+            <input type="text" id="checkIn" placeholder="Selecciona fecha" readonly>
         </div>
+        <div>
+            <label for="checkOut">Check-out</label>
+            <input type="text" id="checkOut" placeholder="Selecciona fecha" readonly>
+        </div>
+
+        <!-- Filtro de precio -->
+        <div>
+            <label for="precioMin">Precio mínimo</label>
+            <input type="number" id="precioMin" placeholder="Mínimo" min="0">
+        </div>
+        <div>
+            <label for="precioMax">Precio máximo</label>
+            <input type="number" id="precioMax" placeholder="Máximo" min="0">
+        </div>
+        <div>
+            <label for="moneda">Moneda</label>
+            <select id="moneda">
+                <option value="">Todas</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+            </select>
+        </div>
+
+        <button  id="btnFiltrar" class="btn-filtrar">Aplicar filtros</button>
+        <button id="btnReset" class="btn-reset">Resetear</button>
     </div>
 
     <div id="contenedor-propiedades"></div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+<script th:src="@{/js/calendario.js}"> </script>
+
 <script>
-    // Funciones para los filtros
     async function aplicarFiltros() {
         const precioMin = document.getElementById('precioMin').value;
         const precioMax = document.getElementById('precioMax').value;
         const moneda = document.getElementById('moneda').value;
 
+        const checkInInput = document.getElementById("checkIn");
+        const checkOutInput = document.getElementById("checkOut");
+
+        let fechaMin = "";
+        let fechaMax = "";
+
+        // Verificar que Flatpickr ya esté inicializado
+        if (checkInInput && checkInInput._flatpickr && checkInInput._flatpickr.selectedDates.length > 0) {
+            fechaMin = checkInInput._flatpickr.formatDate(checkInInput._flatpickr.selectedDates[0], "Y-m-d");
+        }
+
+        if (checkOutInput && checkOutInput._flatpickr && checkOutInput._flatpickr.selectedDates.length > 0) {
+            fechaMax = checkOutInput._flatpickr.formatDate(checkOutInput._flatpickr.selectedDates[0], "Y-m-d");
+        }
+
         const params = new URLSearchParams();
         if (precioMin) params.append('precioMin', precioMin);
         if (precioMax) params.append('precioMax', precioMax);
         if (moneda) params.append('moneda', moneda);
+        if (fechaMin) params.append('fechaMin', fechaMin);
+        if (fechaMax) params.append('fechaMax', fechaMax);
 
         try {
             const respuesta = await fetch(`/api/propiedades?${params}`);
             if (!respuesta.ok) throw new Error('Error al filtrar propiedades');
-
             const propiedades = await respuesta.json();
             mostrarPropiedadesFiltradas(propiedades);
         } catch (error) {
@@ -140,57 +170,48 @@
         document.getElementById('precioMin').value = '';
         document.getElementById('precioMax').value = '';
         document.getElementById('moneda').value = '';
+
+        const checkInInput = document.getElementById("checkIn");
+        const checkOutInput = document.getElementById("checkOut");
+
+        if (checkInInput && checkInInput._flatpickr) checkInInput._flatpickr.clear();
+        if (checkOutInput && checkOutInput._flatpickr) checkOutInput._flatpickr.clear();
+
         cargarPropiedades();
     }
 
     function mostrarPropiedadesFiltradas(propiedades) {
         const contenedor = document.getElementById('contenedor-propiedades');
         contenedor.innerHTML = '';
-
         if (propiedades.length === 0) {
             contenedor.innerHTML = '<p>No se encontraron propiedades con esos filtros.</p>';
             return;
         }
-
         propiedades.forEach(prop => {
             const card = document.createElement('div');
             card.className = 'card';
-
             card.innerHTML = `
-                <img src="${prop.mainImageUrl || '/images/placeholder.jpg'}"
-                     alt="${prop.titulo}"
-                     onerror="this.src='/images/placeholder.jpg'">
+                <img src="${prop.mainImageUrl || '/images/placeholder.jpg'}" alt="${prop.titulo}" onerror="this.src='/images/placeholder.jpg'">
                 <div class="card-content">
-                    <div class="card-header">
-                        <span>${prop.ubicacion}</span>
-                    </div>
+                    <div class="card-header"><span>${prop.ubicacion}</span></div>
                     <a href="/propiedad/${prop.id}" class="card-title-link">
                         <h3 class="card-title">${prop.titulo}</h3>
                     </a>
-                    <div class="card-price">
-                        <strong>${prop.moneda ? prop.moneda + ' ' : ''}$${prop.precioPorNoche}</strong> por noche
-                    </div>
-                    <div class="card-guests">
-                        <small>Hasta ${prop.huespedes} huéspedes</small>
-                    </div>
-                </div>
-            `;
-
+                    <div class="card-price"><strong>${prop.moneda ? prop.moneda + ' ' : ''}$${prop.precioPorNoche}</strong> por noche</div>
+                    <div class="card-guests"><small>Hasta ${prop.huespedes} huéspedes</small></div>
+                </div>`;
             card.querySelector('.card-title-link').removeAttribute('href');
             card.addEventListener('click', () => {
                 window.location.href = `/propiedad/${prop.id}`;
             });
-
             contenedor.appendChild(card);
         });
     }
 
-    // Modificamos la función original cargarPropiedades para que use la misma función de renderizado
     async function cargarPropiedades() {
         try {
             const respuesta = await fetch('/api/propiedades');
             if (!respuesta.ok) throw new Error('No se pudieron cargar las propiedades');
-
             const propiedades = await respuesta.json();
             mostrarPropiedadesFiltradas(propiedades);
         } catch (error) {
@@ -199,8 +220,13 @@
         }
     }
 
-    // Llamamos a cargarPropiedades al cargar la página
-    document.addEventListener('DOMContentLoaded', cargarPropiedades);
+    document.addEventListener('DOMContentLoaded', () => {
+        cargarPropiedades();
+
+        // Asociar botones después de que el DOM esté cargado
+        document.getElementById('btnFiltrar').addEventListener('click', aplicarFiltros);
+        document.getElementById('btnReset').addEventListener('click', resetFiltros);
+    });
 </script>
 </body>
 </html>
