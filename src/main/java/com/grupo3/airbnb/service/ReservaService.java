@@ -78,7 +78,7 @@ public class ReservaService {
                 .distinct()
                 .collect(Collectors.toList());
     }
-
+    
     //metodos de conversion
     private ReservaDTO convertToReservaDTO(Reserva reserva) {
         ReservaDTO dto = new ReservaDTO();
