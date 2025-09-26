@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reseña Publicada - Airbnb</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ff385c 0%, #ff6b81 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .navbar {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff385c, #ff6b81, #ff385c);
+        }
+
+        .success-animation {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ff385c, #ff6b81);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+        }
+
+        .property-name {
+            color: #ff385c;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .review-details {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .review-details h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .stars {
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .reserve-btn {
+            background: linear-gradient(135deg, #ff385c, #ff6b81);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(255, 56, 92, 0.3);
+        }
+
+        .reserve-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 56, 92, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .reserve-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a th:href="@{/mis-reservas(usuario=${usuario})}" class="nav-link">
+            ← Volver a Mis Reservas
+        </a>
+    </header>
+
+    <main class="container">
+        <div class="success-animation">🎉</div>
+        
+        <h1>¡Reseña Publicada!</h1>
+        
+        <p>
+            Tu reseña para <span class="property-name" th:text="${review.propiedad.titulo}">Propiedad</span> 
+            se publicó exitosamente. ¡Gracias por compartir tu experiencia!
+        </p>
+
+        <div class="review-details" th:if="${review}">
+            <h3>📋 Resumen de tu reseña:</h3>
+            <div class="detail-item">
+                <span class="detail-label">Calificación general:</span>
+                <span class="detail-value">
+                    <!-- CORREGIDO: Sin .repeat(), usando thymeleaf -->
+                    <span th:if="${review.calificacionGeneral != null}">
+                        <span th:switch="${review.calificacionGeneral.intValue()}">
+                            <span th:case="1">⭐</span>
+                            <span th:case="2">⭐⭐</span>
+                            <span th:case="3">⭐⭐⭐</span>
+                            <span th:case="4">⭐⭐⭐⭐</span>
+                            <span th:case="5">⭐⭐⭐⭐⭐</span>
+                        </span>
+                        (<span th:text="${review.calificacionGeneral}">5</span>)
+                    </span>
+                    <span th:if="${review.calificacionGeneral == null}">
+                        No calificada
+                    </span>
+                </span>
+            </div>
+            <div class="detail-item" th:if="${review.comentario != null and !review.comentario.isEmpty()}">
+                <span class="detail-label">Tu comentario:</span>
+                <span class="detail-value" th:text="${review.comentario}">Excelente experiencia</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Fecha de publicación:</span>
+                <span class="detail-value" th:text="${review.fechaPublicacion != null ? #temporals.format(review.fechaPublicacion, 'dd/MM/yyyy HH:mm') : 'Ahora'}">
+                    Hoy
+                </span>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <a th:href="@{/mis-reservas(usuario=${usuario})}" class="reserve-btn">
+                📋 Volver a Mis Reservas
+            </a>
+            <a th:href="@{/}" class="reserve-btn btn-secondary">
+                🏠 Ir al Inicio
+            </a>
+        </div>
+    </main>
+
+    <script>
+        // Efecto de confetti simple con JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const colors = ['#ff385c', '#ff6b81', '#ffc107', '#28a745', '#17a2b8'];
+            const container = document.querySelector('.container');
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.zIndex = '9999';
+                    confetti.style.animation = `confettiFall ${Math.random() * 3 + 2}s linear forwards`;
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Remover después de la animación
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 200);
+            }
+        });
+
+        // Agregar la animación CSS dinámicamente
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confettiFall {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

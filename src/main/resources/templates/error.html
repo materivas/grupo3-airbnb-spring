@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error - Airbnb</title>
+    <link rel="stylesheet" th:href="@{/css/propiedad-detail.css}">
+    <style>
+        body {
+            background: #f9f9f9;
+            font-family: Arial, sans-serif;
+        }
+        .error-container {
+            max-width: 600px;
+            margin: 5rem auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 2rem;
+            text-align: center;
+        }
+        h1 {
+            color: #ff385c;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        a {
+            background: #ff385c;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+        a:hover {
+            background: #e61e4d;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <h1>⚠️ Ocurrió un error</h1>
+    <p th:text="${error} ?: 'Ha ocurrido un problema inesperado.'"></p>
+    <a th:href="@{/}">Volver al inicio</a>
+</div>
+</body>
+</html>

@@ -4,6 +4,8 @@ import com.grupo3.airbnb.dto.ReservaDTO;
 import com.grupo3.airbnb.entity.Propiedad;
 import com.grupo3.airbnb.entity.Reserva;
 import com.grupo3.airbnb.repository.IReservaRepository;
+import com.grupo3.airbnb.repository.IReviewRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,9 @@ public class ReservaService {
     @Autowired
     private IReservaRepository reservaRepository;
 
+    @Autowired
+    private IReviewRepository reviewRepository;
+    
     @Autowired
     private PropiedadService propiedadService;
 
@@ -77,6 +82,7 @@ public class ReservaService {
     //metodos de conversion
     private ReservaDTO convertToReservaDTO(Reserva reserva) {
         ReservaDTO dto = new ReservaDTO();
+        dto.setId(reserva.getId()); // ojo, lo vas a necesitar para el botón
         dto.setPropiedadTitulo(reserva.getPropiedad().getTitulo());
         dto.setNroHuespedes(reserva.getNroHuespedes());
         dto.setHuesped(reserva.getHuesped());
@@ -85,15 +91,28 @@ public class ReservaService {
         dto.setPrecioTotal(reserva.getPrecioTotal());
         dto.setDiasEstadia(calcularDiasEstadia(reserva));
 
-        // Obtiene primera imagen de la propiedad
+        // Imagen
         if (!reserva.getPropiedad().getImages().isEmpty()) {
             dto.setImagenUrl(reserva.getPropiedad().getImages().get(0).getUrl());
         } else {
             dto.setImagenUrl("/images/placeholder.jpg");
         }
 
+        // Validar si ya pasó el checkout
+        LocalDate fechaCheckout = reserva.getSalida().toLocalDateTime().toLocalDate();
+        boolean checkoutPasado = fechaCheckout.isBefore(LocalDate.now());
+
+        // Validar si ya tiene review
+        boolean sinReview = reviewRepository.findByReservaIdAndUsuario(reserva.getId(), reserva.getHuesped())
+                                            .isEmpty();
+
+        // Puede calificar si checkout pasó y no existe review previa
+        //dto.setPuedeCalificar(checkoutPasado && sinReview);
+        dto.setPuedeCalificar(true);
+        
         return dto;
     }
+
 
     public int calcularDiasEstadia(Reserva reserva) {
         long dias = reserva.getSalida().toLocalDateTime().toLocalDate().toEpochDay() - reserva.getEntrada().toLocalDateTime().toLocalDate().toEpochDay();

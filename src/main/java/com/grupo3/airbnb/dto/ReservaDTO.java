@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservaDTO {
+	private Long id;
+	
     private String propiedadTitulo;
     private int nroHuespedes;
     private String huesped; // De momento es un String, pero debería ser un Usuario autenticado
@@ -20,6 +22,7 @@ public class ReservaDTO {
     private double precioTotal;
     private String imagenUrl;
     private long diasEstadia;
+    private boolean puedeCalificar;
 
 
 }

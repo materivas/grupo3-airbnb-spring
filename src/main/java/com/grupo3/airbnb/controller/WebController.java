@@ -91,4 +91,14 @@ public class WebController {
         return "publicar";
     }
 
+    @GetMapping("/mis-reviews")
+    public String misReviews(@RequestParam(required = false) String usuario, Model model) {
+        if (usuario == null || usuario.trim().isEmpty()) {
+            model.addAttribute("usuario", "");
+            return "redirect:/reviews/disponibles";
+        }
+        
+        // Redirigir al ReviewController
+        return "redirect:/reviews/disponibles?usuario=" + usuario;
+    }
 }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Reseña</title>
+    <link rel="stylesheet" th:href="@{/css/reviews.css}">
+</head>
+<body>
+<header class="navbar">
+    <a th:href="@{/mis-reservas(usuario=${usuario})}" class="nav-link">⬅ Volver a Mis Reservas</a>
+</header>
+
+<main class="container">
+    <h1>Confirmar tu reseña</h1>
+
+    <div class="review-preview">
+        <h2 th:text="${review.propiedad.titulo}">Propiedad</h2>
+        <p><strong>Puntuación:</strong> <span th:text="${review.rating}"></span>/5</p>
+        <blockquote th:text="${review.contenido}">Texto reseña</blockquote>
+    </div>
+
+    <form th:action="@{/reviews/publicar/{id}(id=${review.id}, usuario=${usuario})}" method="post">
+        <button type="submit" class="reserve-btn">Publicar Reseña</button>
+    </form>
+</main>
+</body>
+</html>
