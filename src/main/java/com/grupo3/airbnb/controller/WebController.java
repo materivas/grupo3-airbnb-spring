@@ -1,7 +1,11 @@
 package com.grupo3.airbnb.controller;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
 import com.grupo3.airbnb.dto.ReservaDTO;
+import com.grupo3.airbnb.entity.Review;
 import com.grupo3.airbnb.service.ReservaService;
+import com.grupo3.airbnb.service.ReviewService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +22,9 @@ public class WebController {
 
     @Autowired
     private ReservaService reservaService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     // PÁGINA PRINCIPAL
     @GetMapping("/")
@@ -96,6 +103,11 @@ public class WebController {
     @GetMapping("/propiedad/{id}")
     public String propiedadDetail(@PathVariable Long id, Model model) {
         model.addAttribute("propiedadId", id);
+
+        // Traer reseñas publicadas
+        List<Review> reviews = reviewService.obtenerReviewsPublicadasDePropiedad(id);
+        model.addAttribute("reviews", reviews);
+
         return "propiedad-detail";
     }
 

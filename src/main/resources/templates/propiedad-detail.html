@@ -1,51 +1,111 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de Propiedad</title>
     <link rel="stylesheet" th:href="@{/css/propiedad-detail.css}">
+    <style>
+        .reviews-section {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .reviews-section h2 {
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .review-card {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .review-card:last-child {
+            border-bottom: none;
+        }
+
+        .review-user {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-comment {
+            font-style: italic;
+            color: #444;
+        }
+
+        .review-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+    </style>
 </head>
+
 <body>
-<header class="navbar">
-    <div class="navbar-left">
-        <a th:href="@{/}">
-            <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo">
-        </a>
-    </div>
-    <div class="navbar-right">
-        <a th:href="@{/mis-reservas}" class="nav-link">Ver Reservas</a>
-    </div>
-</header>
-
-<div class="container">
-    <div class="title-section">
-        <h1 id="titulo"></h1>
-    </div>
-
-    <div class="img-container" id="imagenes"></div>
-
-    <div class="details">
-        <div class="detail-box"><strong>Precio:</strong><br><span id="precio"></span></div>
-        <div class="detail-box"><strong>Habitaciones:</strong><br><span id="habitaciones"></span></div>
-        <div class="detail-box"><strong>Baños:</strong><br><span id="banos"></span></div>
-        <div class="detail-box"><strong>Huéspedes:</strong><br><span id="huespedes"></span></div>
-    </div>
-
-    <div class="container-2">
-        <div class="description">
-            <h2>Descripción</h2>
-            <p id="descripcion"></p>
+    <header class="navbar">
+        <div class="navbar-left">
+            <a th:href="@{/}">
+                <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo">
+            </a>
         </div>
-        <div class="reserve">
-            <button id="reservarBtn" class="reserve-btn">Reservar</button>
+        <div class="navbar-right">
+            <a th:href="@{/mis-reservas}" class="nav-link">Ver Reservas</a>
         </div>
-    </div>
-</div>
+    </header>
 
-<script th:src="@{/js/details.js}"></script>
-<script>
-    const propiedadId = /*[[${propiedadId}]]*/ null;
-</script>
+    <div class="container">
+        <div class="title-section">
+            <h1 id="titulo"></h1>
+        </div>
+
+        <div class="img-container" id="imagenes"></div>
+
+        <div class="details">
+            <div class="detail-box"><strong>Precio:</strong><br><span id="precio"></span></div>
+            <div class="detail-box"><strong>Habitaciones:</strong><br><span id="habitaciones"></span></div>
+            <div class="detail-box"><strong>Baños:</strong><br><span id="banos"></span></div>
+            <div class="detail-box"><strong>Huéspedes:</strong><br><span id="huespedes"></span></div>
+        </div>
+
+        <div class="container-2">
+            <div class="description">
+                <h2>Descripción</h2>
+                <p id="descripcion"></p>
+            </div>
+            <div class="reserve">
+                <button id="reservarBtn" class="reserve-btn">Reservar</button>
+            </div>
+        </div>
+        <section class="reviews-section">
+            <h2>⭐ Reseñas de huéspedes</h2>
+
+            <!-- Si no hay reseñas -->
+            <div th:if="${reviews == null or reviews.isEmpty()}" class="no-reviews">
+                <p>Esta propiedad aún no tiene reseñas. ¡Sé el primero en compartir tu experiencia!</p>
+            </div>
+
+            <!-- Listado de reseñas -->
+            <div th:if="${reviews != null and !reviews.isEmpty()}" class="reviews-list">
+                <div th:each="review : ${reviews}" class="review-card">
+                    <p class="review-user"><strong th:text="${review.usuario}">Usuario</strong> dijo:</p>
+                    <p class="review-comment" th:text="${review.comentario}">Comentario del huésped</p>
+                    <p class="review-date">Publicado el
+                        <span th:text="${#temporals.format(review.fechaPublicacion, 'dd/MM/yyyy')}">01/01/2025</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script th:src="@{/js/details.js}"></script>
+    <script>
+        const propiedadId = /*[[${propiedadId}]]*/ null;
+    </script>
 </body>
+
 </html>
