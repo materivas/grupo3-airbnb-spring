@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar Propiedad - Airbnb</title>
+    <link rel="stylesheet" th:href="@{/css/reserva.css}">
+    <style>
+        /* Estilos específicos para el formulario de tarjeta que mantienen la estética */
+        #formularioTarjeta {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #e0e0e0;
+        }
+
+        .form-group-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-group-row .form-group {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+<header class="navbar">
+    <div class="navbar-left">
+        <a th:href="@{/}">
+            <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo">
+        </a>
+    </div>
+</header>
+
+<main>
+    <div class="reserva-container">
+        <div class="title-section">
+            <h1>Publicar Propiedad</h1>
+            <p>Completa los datos para publicar tu alojamiento</p>
+        </div>
+
+        <!-- Mensaje de error -->
+        <div th:if="${error != null}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
+
+        <form th:action="@{/propiedad/publicar/{id}(id=${anfitrionDni})}" method="post" onsubmit="return validarFormulario()">
+            <div class="form-group">
+                <label for="anfitrionDni">Inserte su dni:</label>
+                <input type="text" id="anfitrionDni" name="anfitrionDni" required
+                       placeholder="Ej: 12345678">
+            </div>
+            <div class="form-group">
+                <label for="titulo">Titulo de la propiedad</label>
+                <input type="text" id="titulo" name="titulo" required
+                       placeholder="Ej: Hotel Cardenas">
+            </div>
+            <div class="form-group">
+                <label for="descripcion">Descripcion de la propiedad</label>
+                <input type="text" id="descripcion" name="descripcion" required
+                       placeholder="Ej: grandioso hotel">
+            </div>
+            <div class="form-group">
+                <label for="ubicacion">Ubicacion de la propiedad</label>
+                <input type="text" id="ubicacion" name="ubicacion" required
+                       placeholder="Ej: Calle 13, Numero 400, Lanus,Argentina">
+            </div>
+
+
+            <div class="form-group">
+                <label for="nroHuespedes">Número maximo de huéspedes:</label>
+                <input type="number" id="nroHuespedes" name="nroHuespedes"
+                       min="1" max="10" required placeholder="Máximo 10 personas">
+            </div>
+            <div class="form-group">
+                <label for="nroHabitaciones">Número de habitaciones:</label>
+                <input type="number" id="nroHabitaciones" name="nroHabitaciones"
+                       min="1" max="10" required placeholder="Máximo 6 habitaciones">
+            </div>
+            <div class="form-group">
+                <label for="nroBanios">Número de baños:</label>
+                <input type="number" id="nroBanios" name="nroBanios"
+                       min="1" max="10" required placeholder="0">
+            </div>
+            <div class="form-group">
+                <label for="precioPorNoche">Precio por noche:</label>
+                <input type="number" id="precioPorNoche" name="precioPorNoche"
+                       min="1" required placeholder="20.35">
+            </div>
+            <div class="form-group">
+                <label for="moneda">Moneda en el que indica el precio</label>
+                <input type="text" id="moneda" name="ubicacion" required
+                       placeholder="En tres siglas, Ej: USD">
+            </div>
+
+
+
+            <!-- Formulario de registro de anfitrion (solo visible cuando no se encuentra anfitrion) -->
+            <div id="formularioAnfitrion" style="display: none;">
+                <!-- desarrollar y utilizar el anfitrion service-->
+
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Publicar alojamiento</button>
+                <a th:href="@{/}" class="btn-cancel">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+<script>
+    //Validaciones requeridas:
+     function validarFormulario() {
+     // a desarrollar
+                return true;
+     }
+</script>
+</html>
