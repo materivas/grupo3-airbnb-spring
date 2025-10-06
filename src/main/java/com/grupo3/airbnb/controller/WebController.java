@@ -1,6 +1,9 @@
 package com.grupo3.airbnb.controller;
 
 import com.grupo3.airbnb.dto.ReservaDTO;
+import com.grupo3.airbnb.entity.Anfitrion;
+import com.grupo3.airbnb.entity.Propiedad;
+import com.grupo3.airbnb.service.PropiedadService;
 import com.grupo3.airbnb.service.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +21,9 @@ public class WebController {
 
     @Autowired
     private ReservaService reservaService;
+
+    @Autowired
+    private PropiedadService propiedadService;
 
     // PÁGINA PRINCIPAL
     @GetMapping("/")
@@ -98,9 +104,55 @@ public class WebController {
         return "propiedad-detail";
     }
 
-    // PUBLICAR (a desarrollar en futuras iteraciones)
+    // PUBLICAR
     @GetMapping("/publicar")
     public String publicar() {
-        return "publicar";
+        return "publicar-propiedad";
+    }
+
+    //PROCESAR PUBLICACION
+    @PostMapping("/propiedad/publicar/{anfitrionDni}")
+    public String procesarPublicarPropiedad(
+            @PathVariable Long anfitrionDni,
+            @RequestParam String titulo,
+            @RequestParam String descripcion,
+            @RequestParam String ubicacion,
+            @RequestParam int nroHuespedes,
+            @RequestParam int nroHabitaciones,
+            @RequestParam int nroBanios,
+            @RequestParam Double precioPorNoche,
+            @RequestParam String moneda,
+            Model model
+    ){
+        try {
+            //validaciones
+            Propiedad p= propiedadService.createPropiedad(anfitrionDni,titulo, descripcion, ubicacion,precioPorNoche, moneda,
+                    nroHuespedes, nroHabitaciones, nroBanios);
+            Anfitrion a= p.getAnfitrion();
+            return "redirect:/mis-propiedades?anfitrion=" + a.getDni();
+        } catch (Exception e) {
+            // Si hay error, volver al formulario
+            model.addAttribute("error", "Error: " + e.getMessage());
+            model.addAttribute("anfitrionDni", anfitrionDni);
+            return "publicar";
+        }
+    }
+
+    //MIS PROPIEDADES
+    @GetMapping("/mis-propiedades")
+    public String misPropiedades(@RequestParam(required = false) Long dni, Model model) {
+
+//        if (dni == null || dni <0 ) {
+//            // Mostrar formulario de búsqueda
+//            model.addAttribute("propiedades", List.of());
+//            return "mis-propiedades";
+//        }
+
+//        // Mostrar propiedades del usuario
+//        List<PropiedadListDTO> propiedades = propiedadService.getPropiedadesByAnfitrion(dni);
+//        model.addAttribute("propiedades", propiedades);
+//        model.addAttribute("anfitrion", dni);
+//        return "mis-propiedades";
+        return "a implementar";
     }
 }

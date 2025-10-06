@@ -2,11 +2,15 @@ package com.grupo3.airbnb.controller;
 
 import com.grupo3.airbnb.dto.PropiedadDetailDTO;
 import com.grupo3.airbnb.dto.PropiedadListDTO;
+import com.grupo3.airbnb.dto.ReservaDTO;
+import com.grupo3.airbnb.entity.Anfitrion;
+import com.grupo3.airbnb.entity.Propiedad;
 import com.grupo3.airbnb.service.PropiedadService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
