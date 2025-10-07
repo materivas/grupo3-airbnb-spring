@@ -53,16 +53,15 @@ body {
 }
 
 .nav-link {
-    color: #333;
+    margin-left: 1.5rem;
     text-decoration: none;
+    color: #333;
     font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    transition: background-color 0.2s;
+    transition: color 0.2s;
 }
 
 .nav-link:hover {
-    background-color: #f0f0f0;
+    color: #FF385C;
 }
 
 /* ====================

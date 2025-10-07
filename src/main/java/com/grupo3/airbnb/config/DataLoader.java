@@ -1,7 +1,9 @@
 package com.grupo3.airbnb.config;
 
+import com.grupo3.airbnb.entity.Anfitrion;
 import com.grupo3.airbnb.entity.Propiedad;
 import com.grupo3.airbnb.entity.PropiedadImagen;
+import com.grupo3.airbnb.repository.IAnfitrionRepository;
 import com.grupo3.airbnb.repository.IPropiedadImagenRepository;
 import com.grupo3.airbnb.repository.IPropiedadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,32 @@ public class DataLoader implements CommandLineRunner {
     @Autowired
     private IPropiedadImagenRepository imagenRepository;
 
+    @Autowired
+    private IAnfitrionRepository anfitrionRepository;
+
     @Override
     public void run(String... args) throws Exception {
         if (propiedadRepository.count() == 0) {
+
+            // CREAR ANFITRIONES DE EJEMPLO
+            Anfitrion anfitrion1 = new Anfitrion();
+            anfitrion1.setDni(12345678L);
+            anfitrion1.setNombre("María");
+            anfitrion1.setApellido("Gonzalez");
+            anfitrionRepository.save(anfitrion1);
+
+            Anfitrion anfitrion2 = new Anfitrion();
+            anfitrion2.setDni(87654321L);
+            anfitrion2.setNombre("Carlos");
+            anfitrion2.setApellido("Oliva");
+            anfitrionRepository.save(anfitrion2);
+
+            Anfitrion anfitrion3 = new Anfitrion();
+            anfitrion3.setDni(11223344L);
+            anfitrion3.setNombre("Ana Martínez");
+            anfitrion3.setApellido("Martínez");
+            anfitrionRepository.save(anfitrion3);
+
             // Propiedad 1
             Propiedad prop1 = new Propiedad();
             prop1.setTitulo("Departamento en Palermo");
@@ -29,6 +54,7 @@ public class DataLoader implements CommandLineRunner {
             prop1.setHuespedes(4);
             prop1.setHabitaciones(2);
             prop1.setBanos(1);
+            prop1.setAnfitrion(anfitrion1);
 
             // Guardar propiedad primero
             propiedadRepository.save(prop1);
@@ -51,6 +77,7 @@ public class DataLoader implements CommandLineRunner {
             p1.setHuespedes(2);
             p1.setHabitaciones(1);
             p1.setBanos(1);
+            p1.setAnfitrion(anfitrion2);
             propiedadRepository.save(p1);
 
             PropiedadImagen img1 = new PropiedadImagen();
@@ -70,6 +97,7 @@ public class DataLoader implements CommandLineRunner {
             p2.setHuespedes(4);
             p2.setHabitaciones(2);
             p2.setBanos(1);
+            p2.setAnfitrion(anfitrion3);
             propiedadRepository.save(p2);
 
             PropiedadImagen img2 = new PropiedadImagen();
@@ -89,6 +117,7 @@ public class DataLoader implements CommandLineRunner {
             p3.setHuespedes(3);
             p3.setHabitaciones(1);
             p3.setBanos(1);
+            p3.setAnfitrion(anfitrion1);
             propiedadRepository.save(p3);
 
             PropiedadImagen img3 = new PropiedadImagen();

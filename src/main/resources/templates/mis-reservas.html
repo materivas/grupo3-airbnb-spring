@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,44 +8,134 @@
     <link rel="stylesheet" th:href="@{/css/propiedad-detail.css}">
     <style>
         /* ====================
-           LAYOUT
-        ==================== */
+       BASE
+    ==================== */
         body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f8f9fa;
+            font-family: "Inter", system-ui, sans-serif;
+            background: #fafafa;
             color: #333;
+            margin: 0;
         }
 
-        .reservas-container {
+        header.navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            height: 36px;
+        }
+
+        .nav-link {
+            margin-left: 1.5rem;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #FF385C;
+        }
+
+        /* ====================
+       LAYOUT
+    ==================== */
+        main {
             max-width: 1200px;
-            margin: 7rem auto 3rem;
-            padding: 0 1rem;
+            margin: 6rem auto 3rem;
+            padding: 0 2rem;
         }
 
         .page-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .page-header h1 {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 700;
             color: #222;
         }
 
         .page-header p {
             color: #666;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
         }
 
         /* ====================
-           RESERVAS GRID
-        ==================== */
+       SEARCH
+    ==================== */
+        .buscar-usuario-card {
+            background: white;
+            padding: 2rem 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .buscar-usuario-card h2 {
+            color: #333;
+            margin-bottom: 1.2rem;
+            font-size: 1.4rem;
+        }
+
+        .form-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.8rem;
+            border: 1.5px solid #ccc;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: #FF385C;
+            outline: none;
+        }
+
+        /* ====================
+       BUTTONS
+    ==================== */
+        .reserve-btn {
+            background-color: #FF385C;
+            color: white;
+            padding: 0.8rem 1.6rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .reserve-btn:hover {
+            background-color: #e13053;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #555;
+        }
+
+        /* ====================
+       GRID / CARDS
+    ==================== */
         .reservas-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
             gap: 2rem;
         }
 
@@ -52,14 +143,14 @@
             background: white;
             border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-            border: 1px solid #eee;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
+            border: 1px solid #eee;
         }
 
         .reserva-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
         .reserva-image {
@@ -73,72 +164,66 @@
         }
 
         .reserva-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: #222;
-            margin: 0 0 1rem 0;
-        }
-
-        /* ====================
-           BADGES
-        ==================== */
-        .status-badge {
-            display: inline-block;
-            padding: 0.35rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
             margin-bottom: 0.8rem;
         }
 
+        /* ====================
+       BADGES
+    ==================== */
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
         .status-ready {
-            background: #fff3cd;
-            color: #856404;
+            background: #FFF4E5;
+            color: #d17b00;
         }
 
         .status-active {
-            background: #e6f7ff;
-            color: #0078d7;
+            background: #E6F8EE;
+            color: #007a40;
         }
 
         /* ====================
-           DETALLES
-        ==================== */
+       DETAILS
+    ==================== */
         .reserva-details {
             display: grid;
-            gap: 0.7rem;
-            margin-bottom: 1.3rem;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
-            font-size: 0.95rem;
         }
 
         .detail-label {
-            color: #555;
             font-weight: 600;
+            color: #555;
         }
 
         .detail-value {
-            color: #222;
+            color: #333;
         }
 
         /* ====================
-           PRICE BOX
-        ==================== */
+       PRICE BOX
+    ==================== */
         .reserva-price {
-            text-align: center;
-            background: #f8f9fa;
+            background: #f9fafb;
+            border-radius: 10px;
             padding: 1rem;
-            border-radius: 8px;
-        }
-
-        .price-total {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #ff385c;
+            text-align: center;
         }
 
         .price-label {
@@ -146,201 +231,142 @@
             color: #777;
         }
 
-        /* ====================
-           BUTTONS
-        ==================== */
-        .reserve-btn {
-            background: #ff385c;
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 10px;
-            display: inline-block;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: background 0.25s ease;
-            margin: 0.3rem;
-        }
-
-        .reserve-btn:hover {
-            background: #e61e4d;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #666;
-        }
-
-        .btn-secondary:hover {
-            background: #555;
+        .price-total {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #FF385C;
+            margin-top: 0.2rem;
         }
 
         /* ====================
-           EMPTY / NO DATA
-        ==================== */
+       CALIFICAR
+    ==================== */
+        .calificar-section {
+            text-align: center;
+            margin: 1rem 0 1.5rem;
+        }
+
+        .calificar-section p {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.4rem;
+        }
+
+        /* ====================
+       EMPTY STATE
+    ==================== */
         .no-reservas {
             text-align: center;
             background: white;
             border-radius: 12px;
             padding: 3rem 2rem;
-            margin: 2rem auto;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
 
         .no-reservas h2 {
-            color: #444;
-            margin-bottom: 1rem;
+            color: #333;
+            margin-bottom: 0.8rem;
         }
 
         .no-reservas p {
             color: #777;
-        }
-
-        /* ====================
-           SEARCH FORM
-        ==================== */
-        .buscar-usuario-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #ff385c;
-        }
-
-        /* ====================
-           CALIFICAR SECTION
-        ==================== */
-        .calificar-section {
-            margin-top: 1rem;
-            text-align: center;
-        }
-
-        .calificar-section p {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
         }
     </style>
 </head>
-<body>
-<header class="navbar">
-    <div class="navbar-left">
-        <a th:href="@{/}">
-            <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo">
-        </a>
-    </div>
-    <div class="navbar-right">
-        <a th:href="@{/}" class="nav-link">Volver al Inicio</a>
-    </div>
-</header>
 
-<main>
-    <div class="reservas-container">
+<body>
+    <header class="navbar">
+        <div class="navbar-left">
+            <a th:href="@{/}">
+                <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo">
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a th:href="@{/}" class="nav-link">Volver al Inicio</a>
+        </div>
+    </header>
+
+    <main>
         <div class="page-header">
             <h1>Mis Reservas</h1>
             <p th:if="${usuario != null and !usuario.isEmpty()}">
-                Reservas de: <strong th:text="${usuario}"></strong>
+                Reservas de <strong th:text="${usuario}"></strong>
             </p>
-            <p th:if="${usuario == null or usuario.isEmpty()}">
-                Consulta tus reservas por usuario
-            </p>
+            <p th:if="${usuario == null or usuario.isEmpty()}">Consulta tus reservas por usuario</p>
         </div>
 
-        <!-- BUSCAR USUARIO -->
+        <!-- Buscar usuario -->
         <div th:if="${usuario == null or usuario.isEmpty()}" class="buscar-usuario-card">
             <h2>Buscar reservas por usuario</h2>
             <form method="get" action="/mis-reservas">
-                <input type="text" id="usuarioInput" name="usuario"
-                       placeholder="Ej: juan123" required class="form-input">
+                <input type="text" id="usuarioInput" name="usuario" placeholder="Ej: juan123" required
+                    class="form-input">
                 <button type="submit" class="reserve-btn">Buscar Reservas</button>
             </form>
         </div>
 
-        <!-- MENSAJE SIN RESERVAS -->
+        <!-- No hay reservas -->
         <div th:if="${reservas != null and reservas.empty and (usuario != null and !usuario.isEmpty())}"
-             class="no-reservas">
+            class="no-reservas">
             <h2>No tienes reservas</h2>
             <p>El usuario <strong th:text="${usuario}"></strong> no tiene reservas registradas.</p>
             <a th:href="@{/}" class="reserve-btn">Buscar propiedades</a>
             <a th:href="@{/mis-reservas}" class="reserve-btn btn-secondary">Ingresar otro usuario</a>
         </div>
 
-        <!-- LISTADO -->
+        <!-- Listado -->
         <div th:if="${reservas != null and !reservas.empty}" class="reservas-grid">
             <div th:each="reserva : ${reservas}" class="reserva-card">
-                <img th:if="${reserva.imagenUrl != null}" th:src="${reserva.imagenUrl}"
-                     alt="Imagen de la propiedad" class="reserva-image"
-                     onerror="this.src='/assets/img/placeholder.jpg'">
-                <img th:if="${reserva.imagenUrl == null}" src="/assets/img/placeholder.jpg"
-                     alt="Imagen no disponible" class="reserva-image">
+                <img th:if="${reserva.imagenUrl != null}" th:src="${reserva.imagenUrl}" alt="Imagen de la propiedad"
+                    class="reserva-image" onerror="this.src='/assets/img/placeholder.jpg'">
+                <img th:if="${reserva.imagenUrl == null}" src="/assets/img/placeholder.jpg" alt="Imagen no disponible"
+                    class="reserva-image">
 
                 <div class="reserva-content">
-                    <!-- Badge -->
-                    <div th:if="${reserva.puedeCalificar}" class="status-badge status-ready">
-                        ⭐ Lista para calificar
+                    <div th:if="${reserva.puedeCalificar}" class="status-badge status-ready">⭐ Lista para calificar
                     </div>
-                    <div th:unless="${reserva.puedeCalificar}" class="status-badge status-active">
-                        🟢 Reserva activa
+                    <div th:unless="${reserva.puedeCalificar}" class="status-badge status-active">🟢 Reserva activa
                     </div>
 
-                    <!-- Título -->
-                    <h3 class="reserva-title" th:text="${reserva.propiedadTitulo}">Nombre de la propiedad</h3>
+                    <h3 class="reserva-title" th:text="${reserva.propiedadTitulo}"></h3>
 
-                    <!-- Detalles -->
                     <div class="reserva-details">
                         <div class="detail-row">
                             <span class="detail-label">Huéspedes:</span>
-                            <span class="detail-value" th:text="${reserva.nroHuespedes} + ' personas'">2 personas</span>
+                            <span class="detail-value" th:text="${reserva.nroHuespedes} + ' personas'"></span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Check-in:</span>
-                            <span class="detail-value" th:text="${#temporals.format(reserva.entrada, 'dd/MM/yyyy')}">01/01/2024</span>
+                            <span class="detail-value"
+                                th:text="${#temporals.format(reserva.entrada, 'dd/MM/yyyy')}"></span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Check-out:</span>
-                            <span class="detail-value" th:text="${#temporals.format(reserva.salida, 'dd/MM/yyyy')}">05/01/2024</span>
+                            <span class="detail-value"
+                                th:text="${#temporals.format(reserva.salida, 'dd/MM/yyyy')}"></span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Duración:</span>
-                            <span class="detail-value" th:text="${reserva.diasEstadia} + ' noches'">4 noches</span>
+                            <span class="detail-value" th:text="${reserva.diasEstadia} + ' noches'"></span>
                         </div>
                     </div>
 
-                    <!-- Botón calificar -->
                     <div th:if="${reserva.puedeCalificar}" class="calificar-section">
                         <a th:href="@{/reviews/nueva/{reservaId}(reservaId=${reserva.id}, usuario=${usuario})}"
-                           class="reserve-btn">⭐ Calificar Propiedad</a>
+                            class="reserve-btn">⭐ Calificar Propiedad</a>
                         <p>Tu estadía ha finalizado. ¡Comparte tu experiencia!</p>
                     </div>
 
-                    <!-- Precio -->
                     <div class="reserva-price">
                         <span class="price-label">Precio total:</span>
-                        <div class="price-total"
-                             th:text="'$' + ${#numbers.formatDecimal(reserva.precioTotal, 1, 2)}">
-                            $200.00
-                        </div>
+                        <div class="price-total" th:text="'$' + ${#numbers.formatDecimal(reserva.precioTotal, 1, 2)}">
+                            $200.00</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
 </body>
+
 </html>

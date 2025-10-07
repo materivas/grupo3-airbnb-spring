@@ -13,28 +13,36 @@ public class AnfitrionService {
     @Autowired
     private IAnfitrionRepository anfitrionRepository;
 
-    public Anfitrion crearAnfitrion(Long dni, String nombre, String apellido){
-        Anfitrion a= new Anfitrion();
+    public Anfitrion crearAnfitrion(Long dni, String nombre, String apellido) {
+        Anfitrion a = new Anfitrion();
         a.setDni(dni);
         a.setNombre(nombre);
         a.setApellido(apellido);
         return anfitrionRepository.save(a);
     }
 
-    public Anfitrion getAnfitrion(Long id){
+    public Anfitrion getAnfitrion(Long id) {
         return anfitrionRepository.findById(id)
-                .orElseThrow( () -> new RuntimeException("Anfitrion no encontrado"));
-    }
-    public Anfitrion getAnfitrionByDni(Long dni){
-        return anfitrionRepository.findByDni(dni)
-                .orElseThrow( () -> new RuntimeException("Anfitrion no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Anfitrion no encontrado"));
     }
 
-    //para una futura busqueda
-    public List<Propiedad> getPropiedadesByAnfitrion(Long dni ){
-        Anfitrion a= getAnfitrionByDni(dni);
+    public Anfitrion getAnfitrionByDni(Long dni) {
+        return anfitrionRepository.findByDni(dni)
+                .orElseThrow(() -> new RuntimeException("Anfitrion no encontrado"));
+    }
+
+    // para una futura busqueda
+    public List<Propiedad> getPropiedadesByAnfitrion(Long dni) {
+        Anfitrion a = getAnfitrionByDni(dni);
         return a.getPropiedades();
     }
 
+    public Anfitrion findByDni(Long dni) {
+        return anfitrionRepository.findByDni(dni)
+                .orElseThrow(() -> new RuntimeException("Anfitrion no encontrado"));
+    }
 
+    public Anfitrion save(Anfitrion anfitrion) {
+        return anfitrionRepository.save(anfitrion);
+    }
 }

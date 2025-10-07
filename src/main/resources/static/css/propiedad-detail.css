@@ -53,30 +53,29 @@ body {
 }
 
 .nav-link {
-    color: #333;
+    margin-left: 1.5rem;
     text-decoration: none;
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    transition: background-color 0.2s;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.2s;
 }
 
 .nav-link:hover {
-    background-color: #f0f0f0;
+    color: #FF385C;
 }
 
 /* ====================
    MAIN CONTENT
 ==================== */
 .container {
-	margin: 120px auto 2rem auto;
-	margin: 2rem auto;
-	margin-top: 1000px;
-	background: white;
-	padding: 2rem;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	border-radius: 10px;
-	
+    margin: 120px auto 2rem auto;
+    margin: 2rem auto;
+    margin-top: 1000px;
+    background: white;
+    padding: 2rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+
 }
 
 /* ====================
@@ -149,6 +148,7 @@ body {
     font-size: 0.9rem;
     font-weight: 500;
 }
+
 /* ====================
    PROPERTY DETAIL PAGE
 ==================== */

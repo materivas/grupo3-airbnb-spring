@@ -69,12 +69,12 @@ public class PropiedadControllerTest {
     @Test
     public void searchPlacesReturnsMatchingResultsTest() {
         List<PropiedadListDTO> propiedades = new ArrayList<>();
-        propiedades.add(new PropiedadListDTO(1L, "Depto en Palermo", "Palermo, Buenos Aires", 100.0, 2, 4.5, "/img1.jpg", "USD"));
-        propiedades.add(new PropiedadListDTO(2L, "Loft en Palermo", "Palermo Soho", 150.0, 3, 4.8, "/img2.jpg", "USD"));
-        propiedades.add(new PropiedadListDTO(3L, "Casa en Palermo", "Palermo Hollywood", 200.0, 4, 4.7, "/img3.jpg", "USD"));
-        propiedades.add(new PropiedadListDTO(4L, "Depto Palermo Chico", "Palermo Chico", 250.0, 2, 4.6, "/img4.jpg", "USD"));
-        propiedades.add(new PropiedadListDTO(5L, "Depto en Buenos Aires", "Buenos Aires", 300.0, 5, 4.3, "/img5.jpg", "USD"));
-        propiedades.add(new PropiedadListDTO(6L, "Casa Palermo Italia", "Palermo, Italia", 120.0, 2, 4.4, "/img6.jpg", "EUR")); // Queda fuera por limit 5
+        propiedades.add(new PropiedadListDTO(1L, "Depto en Palermo", "Palermo, Buenos Aires", 100.0, 2, 2, 1, 4.5, "/img1.jpg", "USD"));
+        propiedades.add(new PropiedadListDTO(2L, "Loft en Palermo", "Palermo Soho", 150.0, 3, 1, 1, 4.8, "/img2.jpg", "USD"));
+        propiedades.add(new PropiedadListDTO(3L, "Casa en Palermo", "Palermo Hollywood", 200.0, 4, 3, 2, 4.7, "/img3.jpg", "USD"));
+        propiedades.add(new PropiedadListDTO(4L, "Depto Palermo Chico", "Palermo Chico", 250.0, 2, 2, 1, 4.6, "/img4.jpg", "USD"));
+        propiedades.add(new PropiedadListDTO(5L, "Depto en Buenos Aires", "Buenos Aires", 300.0, 5, 3, 2, 4.3, "/img5.jpg", "USD"));
+        propiedades.add(new PropiedadListDTO(6L, "Casa Palermo Italia", "Palermo, Italia", 120.0, 2, 2, 1, 4.4, "/img6.jpg", "EUR")); // Queda fuera por limit 5
 
         Mockito.when(propiedadService.getAllPropiedades(null, null, null, null, null, null))
                 .thenReturn(propiedades);
