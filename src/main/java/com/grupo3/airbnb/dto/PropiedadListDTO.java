@@ -15,6 +15,8 @@ public class PropiedadListDTO {
     private String ubicacion;
     private Double precioPorNoche;
     private Integer huespedes;
+    private Integer habitaciones; // NUEVO
+    private Integer banos;
     private Double calificacion;
     private String mainImageUrl;
     private String moneda; // Nuevo campo

@@ -16,8 +16,10 @@ public class Propiedad {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "anfitrion_id")
     private Anfitrion anfitrion;
+
     private String titulo;
     private String descripcion;
     private String ubicacion;
@@ -35,10 +37,10 @@ public class Propiedad {
     public Propiedad() {
     }
 
-    public Propiedad( Anfitrion anfitrion, String titulo, String descripcion, String ubicacion,
-                     Double precioPorNoche, Integer huespedes, Integer habitaciones,
-                     Integer banos, Double calificacion, String moneda) {
-        this.anfitrion= anfitrion;
+    public Propiedad(Anfitrion anfitrion, String titulo, String descripcion, String ubicacion,
+            Double precioPorNoche, Integer huespedes, Integer habitaciones,
+            Integer banos, Double calificacion, String moneda) {
+        this.anfitrion = anfitrion;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.ubicacion = ubicacion;

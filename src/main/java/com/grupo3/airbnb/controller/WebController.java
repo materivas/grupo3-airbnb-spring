@@ -1,21 +1,26 @@
 package com.grupo3.airbnb.controller;
 
 import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
+import com.grupo3.airbnb.dto.PropiedadListDTO;
 import com.grupo3.airbnb.dto.ReservaDTO;
 import com.grupo3.airbnb.entity.Review;
 import com.grupo3.airbnb.entity.Anfitrion;
 import com.grupo3.airbnb.entity.Propiedad;
+import com.grupo3.airbnb.service.AnfitrionService;
 import com.grupo3.airbnb.service.PropiedadService;
 import com.grupo3.airbnb.service.ReservaService;
 import com.grupo3.airbnb.service.ReviewService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +33,12 @@ public class WebController {
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
     private PropiedadService propiedadService;
+
+    @Autowired
+    private AnfitrionService anfitrionService;
 
     // PÁGINA PRINCIPAL
     @GetMapping("/")
@@ -122,9 +132,9 @@ public class WebController {
     }
 
     // PROCESAR PUBLICACION
-    @PostMapping("/propiedad/publicar/{anfitrionDni}")
+    @PostMapping("/propiedad/publicar")
     public String procesarPublicarPropiedad(
-            @PathVariable Long anfitrionDni,
+            @RequestParam Long anfitrionDni,
             @RequestParam String titulo,
             @RequestParam String descripcion,
             @RequestParam String ubicacion,
@@ -137,35 +147,31 @@ public class WebController {
         try {
             // validaciones
             Propiedad p = propiedadService.createPropiedad(anfitrionDni, titulo, descripcion, ubicacion, precioPorNoche,
-                    moneda,
-                    nroHuespedes, nroHabitaciones, nroBanios);
+                    moneda, nroHuespedes, nroHabitaciones, nroBanios);
             Anfitrion a = p.getAnfitrion();
             return "redirect:/mis-propiedades?anfitrion=" + a.getDni();
         } catch (Exception e) {
             // Si hay error, volver al formulario
             model.addAttribute("error", "Error: " + e.getMessage());
             model.addAttribute("anfitrionDni", anfitrionDni);
-            return "publicar";
+            return "publicar-propiedad";
         }
     }
 
     // MIS PROPIEDADES
     @GetMapping("/mis-propiedades")
-    public String misPropiedades(@RequestParam(required = false) Long dni, Model model) {
+    public String misPropiedades(@RequestParam(required = false) Long anfitrion, Model model) {
+        if (anfitrion == null || anfitrion < 0) {
+            // Mostrar formulario de búsqueda
+            model.addAttribute("propiedades", List.of());
+            return "mis-propiedades";
+        }
 
-        // if (dni == null || dni <0 ) {
-        // // Mostrar formulario de búsqueda
-        // model.addAttribute("propiedades", List.of());
-        // return "mis-propiedades";
-        // }
-
-        // // Mostrar propiedades del usuario
-        // List<PropiedadListDTO> propiedades =
-        // propiedadService.getPropiedadesByAnfitrion(dni);
-        // model.addAttribute("propiedades", propiedades);
-        // model.addAttribute("anfitrion", dni);
-        // return "mis-propiedades";
-        return "a implementar";
+        // Mostrar propiedades del usuario
+        List<PropiedadListDTO> propiedades = propiedadService.getPropiedadesByAnfitrion(anfitrion);
+        model.addAttribute("propiedades", propiedades);
+        model.addAttribute("anfitrion", anfitrion);
+        return "mis-propiedades";
     }
 
     @GetMapping("/mis-reviews")
@@ -175,7 +181,22 @@ public class WebController {
             return "redirect:/reviews/disponibles";
         }
 
-        // Redirigir al ReviewController
         return "redirect:/reviews/disponibles?usuario=" + usuario;
     }
+
+    @GetMapping("/api/anfitriones/{dni}")
+    @ResponseBody
+    public ResponseEntity<?> verificarAnfitrion(@PathVariable Long dni) {
+        try {
+            Anfitrion anfitrion = anfitrionService.findByDni(dni);
+            if (anfitrion != null) {
+                return ResponseEntity.ok().build(); // Anfitrión existe
+            } else {
+                return ResponseEntity.notFound().build(); // Anfitrión no existe
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
