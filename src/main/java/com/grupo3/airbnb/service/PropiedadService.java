@@ -57,7 +57,7 @@ public class PropiedadService {
                 .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
     }
 
-    public List<PropiedadListDTO> getAllPropiedades(Double precioMin, Double precioMax, String moneda, LocalDate fechaMin, LocalDate fechaMax) {
+    public List<PropiedadListDTO> getAllPropiedades(Double precioMin, Double precioMax, String moneda, String location, LocalDate fechaMin, LocalDate fechaMax) {
 
 		List<Propiedad> propiedades = propiedadRepository.findAll();
 		
@@ -77,6 +77,11 @@ public class PropiedadService {
 			if (moneda != null && !moneda.isEmpty() && !moneda.equals(propiedad.getMoneda())) {
 				return false;
 			}
+
+            // --- Filtro por ubicacion ---
+            if (location != null && !location.isEmpty() && !propiedad.getUbicacion().toLowerCase().contains(location.toLowerCase()))  {
+                return false;
+            }
 			
 			// --- Filtro por disponibilidad ---
 			if (fechaMin != null || fechaMax != null) {

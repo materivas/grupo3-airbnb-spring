@@ -70,6 +70,57 @@
         .card-title { margin: 0.3rem 0; font-size: 1.2rem; }
         .card-price { margin-top: 0.5rem; font-weight: 600; }
         .card-guests small { color: #555; }
+
+        .autocomplete-container {
+            position: relative;
+            top: 100%;
+            margin-top: 4px;
+        }
+        .suggestions {
+          position: absolute;
+          top: calc(100% + 8px);
+          left: 0;
+          right: 0;
+          background: #fff;
+          border-radius: 16px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+          list-style: none;
+          margin: 0;
+          padding: 0.5rem 0;
+          max-height: 280px;
+          overflow-y: auto;
+          z-index: 9999;
+          opacity: 0;
+          transform: translateY(-5px);
+          pointer-events: none;
+          transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .suggestions.active {
+          opacity: 1;
+          transform: translateY(0);
+          pointer-events: auto;
+        }
+
+        .suggestions li {
+          display: flex;
+          align-items: center;
+          gap: 0.7rem;
+          padding: 10px 16px;
+          cursor: pointer;
+          transition: background 0.15s ease;
+          font-family: 'Poppins', sans-serif;
+        }
+
+        .suggestions li:hover {
+          background: #f7f7f7;
+        }
+
+        .suggestions li i {
+          color: #717171;
+          font-size: 1rem;
+        }
+
     </style>
 </head>
 <body>
@@ -85,6 +136,15 @@
 <main>
     <!-- Filtros - Integrados con el diseño existente -->
     <div class="filtros-container">
+
+        <!-- Filtro de ubicacion -->
+        <div class="filtro-ubicacion">
+            <label for="placeInput">Lugar</label>
+            <div class="autocomplete-container">
+                <input type="text" id="placeInput" placeholder="Explorar destinos" autocomplete="off">
+                <ul id="suggestions" class="suggestions"></ul>
+            </div>
+        </div>
 
         <!-- Filtro de fechas -->
         <div>
@@ -125,6 +185,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+<script th:src="@{/js/places.js}"> </script>
 <script th:src="@{/js/calendario.js}"> </script>
 
 <script>
@@ -135,6 +196,8 @@
 
         const checkInInput = document.getElementById("checkIn");
         const checkOutInput = document.getElementById("checkOut");
+
+        const location = document.getElementById("placeInput").value;
 
         let fechaMin = "";
         let fechaMax = "";
@@ -152,6 +215,7 @@
         if (precioMin) params.append('precioMin', precioMin);
         if (precioMax) params.append('precioMax', precioMax);
         if (moneda) params.append('moneda', moneda);
+        if (location) params.append('location', location);
         if (fechaMin) params.append('fechaMin', fechaMin);
         if (fechaMax) params.append('fechaMax', fechaMax);
 

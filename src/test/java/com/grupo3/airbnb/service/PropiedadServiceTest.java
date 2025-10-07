@@ -69,7 +69,7 @@ public class PropiedadServiceTest {
     public void getAllPropiedades_WithoutFilters_ReturnsAllProperties() {
         when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
 
-        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, null, null);
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, null, null, null);
 
         assertEquals(2, result.size());
     }
@@ -78,7 +78,7 @@ public class PropiedadServiceTest {
     public void getAllPropiedades_WithPriceFilter_ReturnsFilteredProperties() {
         when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
 
-        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(100.0, 200.0, null, null, null);
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(100.0, 200.0, null, null, null, null);
 
         assertEquals(1, result.size());
         assertEquals("Casa en la playa", result.get(0).getTitulo());
@@ -88,7 +88,7 @@ public class PropiedadServiceTest {
     public void getAllPropiedades_WithCurrencyFilter_ReturnsFilteredProperties() {
         when(propiedadRepository.findAll()).thenReturn(Arrays.asList(propiedad, propiedad2));
 
-        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, "USD", null, null);
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, "USD", null, null, null);
 
         assertEquals(2, result.size());
     }
@@ -101,7 +101,7 @@ public class PropiedadServiceTest {
         LocalDate fixedStart = LocalDate.of(2025, 9, 15);
         LocalDate fixedEnd = fixedStart.plusDays(5);
 
-        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, fixedStart, fixedEnd);
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, null, fixedStart, fixedEnd);
 
         assertEquals(2, result.size());
     }
@@ -114,7 +114,7 @@ public class PropiedadServiceTest {
 
         LocalDate endDate = LocalDate.of(2025, 9, 20);
 
-        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, null, endDate);
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, null, null, endDate);
 
         // Assert
         assertEquals(2, result.size());
@@ -128,7 +128,7 @@ public class PropiedadServiceTest {
 
         LocalDate startDate = LocalDate.of(2025, 9, 15);
 
-        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, startDate, null);
+        List<PropiedadListDTO> result = propiedadService.getAllPropiedades(null, null, null, null, startDate, null);
 
         assertEquals(2, result.size());
     }

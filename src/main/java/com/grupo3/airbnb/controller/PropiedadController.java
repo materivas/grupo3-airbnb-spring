@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/propiedades")
@@ -29,10 +30,11 @@ public class PropiedadController {
             @RequestParam(required = false) Double precioMin,
             @RequestParam(required = false) Double precioMax,
             @RequestParam(required = false) String moneda,
+            @RequestParam(required = false) String location,
             @RequestParam(required = false) LocalDate fechaMin,
             @RequestParam(required = false) LocalDate fechaMax) {
         try {
-            List<PropiedadListDTO> propiedades = propiedadService.getAllPropiedades(precioMin, precioMax, moneda, fechaMin, fechaMax);
+            List<PropiedadListDTO> propiedades = propiedadService.getAllPropiedades(precioMin, precioMax, moneda, location, fechaMin, fechaMax);
             return ResponseEntity.ok(propiedades);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -50,4 +52,32 @@ public class PropiedadController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/lugares/buscar")
+    public ResponseEntity<List<String>> searchPlaces(@RequestParam String query) {
+        try {
+            if (query == null || query.trim().isEmpty())
+                return ResponseEntity.ok(List.of());
+
+            // Traigo todas las ubicaciones desde la base de datos
+            List<String> allPlaces = propiedadService.getAllPropiedades(null,null,null,null,null,null)
+                    .stream()
+                    .map(PropiedadListDTO::getUbicacion)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .toList();
+
+            // Se filtra por coincidencia y se limita a 5 resultados
+            List<String> matchingPlaces = allPlaces.stream()
+                    .filter(p -> p.toLowerCase().contains(query.toLowerCase()))
+                    .limit(5l)
+                    .toList();
+
+            return ResponseEntity.ok(matchingPlaces);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
