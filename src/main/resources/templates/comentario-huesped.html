@@ -1,0 +1,299 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comentar sobre Huésped - Airbnb</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f7f7f7;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+
+        header.navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .logo { height: 36px; }
+
+        .nav-link {
+            margin-left: 1.5rem;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover { color: #FF385C; }
+
+        main {
+            max-width: 800px;
+            margin: 6rem auto 3rem;
+            padding: 0 2rem;
+        }
+
+        .form-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #717171;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .info-box {
+            background: #f9fafb;
+            border-left: 4px solid #FF385C;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            color: #222;
+        }
+
+        .info-box p {
+            margin: 0.3rem 0;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            color: #222;
+            font-size: 0.95rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #FF385C;
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #717171;
+            margin-top: 0.5rem;
+        }
+
+        .error-message {
+            background: #fde8ec;
+            color: #8f1d35;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.9rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            text-decoration: none;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background-color: #FF385C;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #e61e4d;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #f7f7f7;
+            color: #222;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e7e7e7;
+        }
+
+        .guidelines {
+            background: #e6f8ee;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .guidelines h3 {
+            margin: 0 0 0.8rem 0;
+            font-size: 1rem;
+            color: #007a40;
+        }
+
+        .guidelines ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .guidelines li {
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-left">
+            <a th:href="@{/}">
+                <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo">
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a th:href="@{/}" class="nav-link">Inicio</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="form-card">
+            <h1>Comentar sobre el huésped</h1>
+            <p class="subtitle">Comparte tu experiencia con la comunidad de anfitriones</p>
+
+            <div th:if="${error}" class="error-message" th:text="${error}"></div>
+
+            <div class="info-box" th:if="${reserva}">
+                <h3>Información de la reserva</h3>
+                <p><strong>Propiedad:</strong> <span th:text="${reserva.propiedad.titulo}">Propiedad</span></p>
+                <p><strong>Huésped:</strong> <span th:text="${reserva.huesped}">Usuario</span></p>
+                <p><strong>Entrada:</strong> <span th:text="${#temporals.format(reserva.entrada.toLocalDateTime(), 'dd/MM/yyyy')}">01/01/2024</span></p>
+                <p><strong>Salida:</strong> <span th:text="${#temporals.format(reserva.salida.toLocalDateTime(), 'dd/MM/yyyy')}">05/01/2024</span></p>
+            </div>
+
+            <div class="guidelines">
+                <h3>💡 Consejos para escribir un buen comentario</h3>
+                <ul>
+                    <li>Sé honesto y constructivo en tu feedback</li>
+                    <li>Menciona aspectos específicos de la estadía</li>
+                    <li>Mantén un tono profesional y respetuoso</li>
+                    <li>Ayuda a otros anfitriones con información relevante</li>
+                </ul>
+            </div>
+
+            <form th:action="@{/anfitrion/comentario}" method="post">
+                <input type="hidden" name="reservaId" th:value="${reserva?.id}">
+                <input type="hidden" name="anfitrionDni" th:value="${anfitrionDni}">
+
+                <div class="form-group">
+                    <label for="comentario">Tu comentario sobre el huésped *</label>
+                    <textarea
+                        id="comentario"
+                        name="comentario" maxlength="500"
+                        placeholder="Escribe aquí tu experiencia con el huésped. ¿Fue respetuoso con la propiedad? ¿Siguió las normas de la casa? ¿Lo recomendarías a otros anfitriones?"
+                        oninput="updateCharCount(this)"></textarea>
+                    <div class="char-counter">
+                        <span id="charCount">0</span> / 500 caracteres
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a th:href="@{/mis-propiedades(anfitrion=${anfitrionDni})}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Publicar comentario</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function updateCharCount(textarea) {
+            const charCount = document.getElementById('charCount');
+            const submitBtn = document.getElementById('submitBtn');
+            const length = textarea.value.length;
+
+            charCount.textContent = length;
+
+            // Deshabilitar botón si está vacío
+            if (length === 0) {
+                submitBtn.disabled = true;
+            } else {
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Validar al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const textarea = document.getElementById('comentario');
+            updateCharCount(textarea);
+
+            // Prevenir envío de formulario vacío
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const comentario = textarea.value.trim();
+                if (comentario.length === 0) {
+                    e.preventDefault();
+                    alert('El comentario no puede estar vacío');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+

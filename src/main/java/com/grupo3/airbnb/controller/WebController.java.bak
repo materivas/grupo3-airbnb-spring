@@ -1,5 +1,6 @@
 package com.grupo3.airbnb.controller;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
 import com.grupo3.airbnb.dto.PropiedadListDTO;
 import com.grupo3.airbnb.dto.ReservaDTO;
 import com.grupo3.airbnb.entity.Review;
@@ -77,6 +78,7 @@ public class WebController {
                 if (numeroTarjeta == null || numeroTarjeta.trim().isEmpty()) {
                     throw new IllegalArgumentException("Número de tarjeta requerido");
                 }
+                // Aquí podrías agregar más validaciones para la tarjeta
             }
 
             // Crear reserva
@@ -152,31 +154,30 @@ public class WebController {
             @RequestParam String moneda,
             Model model) {
         try {
+            // validaciones
             Propiedad p = propiedadService.createPropiedad(anfitrionDni, titulo, descripcion, ubicacion, precioPorNoche,
                     moneda, nroHuespedes, nroHabitaciones, nroBanios);
             Anfitrion a = p.getAnfitrion();
             return "redirect:/mis-propiedades?anfitrion=" + a.getDni();
         } catch (Exception e) {
+            // Si hay error, volver al formulario
             model.addAttribute("error", "Error: " + e.getMessage());
             model.addAttribute("anfitrionDni", anfitrionDni);
             return "publicar-propiedad";
         }
     }
 
-    // MIS PROPIEDADES - CORREGIDO
+    // MIS PROPIEDADES
     @GetMapping("/mis-propiedades")
     public String misPropiedades(@RequestParam(required = false) Long anfitrion, Model model) {
-        // IMPORTANTE: Agregar explícitamente el atributo anfitrion al modelo
-        // Esto permite que Thymeleaf evalúe la condición th:if="${anfitrion == null}"
-        model.addAttribute("anfitrion", anfitrion);
-        
-        if (anfitrion == null || anfitrion <= 0) {
+        if (anfitrion == null || anfitrion < 0) {
             model.addAttribute("propiedades", List.of());
             return "mis-propiedades-mejorado";
         }
 
         List<PropiedadListDTO> propiedades = propiedadService.getPropiedadesByAnfitrion(anfitrion);
         model.addAttribute("propiedades", propiedades);
+        model.addAttribute("anfitrion", anfitrion);
         return "mis-propiedades-mejorado";
     }
 
@@ -197,25 +198,13 @@ public class WebController {
         try {
             Anfitrion anfitrion = anfitrionService.findByDni(dni);
             if (anfitrion != null) {
-                return ResponseEntity.ok().build();
+                return ResponseEntity.ok().build(); // Anfitrión existe
             } else {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.notFound().build(); // Anfitrión no existe
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    // RESERVAS DEL ANFITRI�N (para comentar sobre hu�spedes - Historia 4)
-    @GetMapping("/anfitrion/mis-reservas")
-    public String reservasDelAnfitrion(@RequestParam(required = false) Long dni, Model model) {
-        model.addAttribute("anfitrionDni", dni);
-        if (dni == null || dni <= 0) {
-            model.addAttribute("reservas", List.of());
-            return "anfitrion-reservas";
-        }
-        List<ReservaDTO> reservas = reservaService.getReservasByAnfitrion(dni);
-        model.addAttribute("reservas", reservas);
-        return "anfitrion-reservas";
-    }
 }

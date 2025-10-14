@@ -21,6 +21,18 @@ public class AnfitrionService {
         return anfitrionRepository.save(a);
     }
 
+    // Sobrecarga con datos de contacto
+    public Anfitrion crearAnfitrion(Long dni, String nombre, String apellido, String email, String telefono, String identificacionFiscal) {
+        Anfitrion a = new Anfitrion();
+        a.setDni(dni);
+        a.setNombre(nombre);
+        a.setApellido(apellido);
+        a.setEmail(email);
+        a.setTelefono(telefono);
+        a.setIdentificacionFiscal(identificacionFiscal);
+        return anfitrionRepository.save(a);
+    }
+
     public Anfitrion getAnfitrion(Long id) {
         return anfitrionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Anfitrion no encontrado"));
@@ -39,7 +51,7 @@ public class AnfitrionService {
 
     public Anfitrion findByDni(Long dni) {
         return anfitrionRepository.findByDni(dni)
-                .orElseThrow(() -> new RuntimeException("Anfitrion no encontrado"));
+                .orElse(null);
     }
 
     public Anfitrion save(Anfitrion anfitrion) {

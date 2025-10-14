@@ -30,6 +30,9 @@ public class Propiedad {
     private Double calificacion;
     private String moneda = "USD"; // Nuevo campo para la moneda
 
+    @Enumerated(EnumType.STRING)
+    private PropiedadEstado estado = PropiedadEstado.PUBLICADA;
+
     @OneToMany(mappedBy = "propiedad", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PropiedadImagen> images = new ArrayList<>();
 

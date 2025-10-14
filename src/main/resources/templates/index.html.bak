@@ -131,7 +131,6 @@
     <div class="navbar-right">
         <a th:href="@{/anfitrion/registro}" class="nav-link">Ser Anfitrión</a>
         <a th:href="@{/publicar}" class="nav-link">Publicar Propiedad</a>
-        <a th:href="@{/mis-propiedades}" class="nav-link">Mis Propiedades</a>
         <a th:href="@{/mis-reservas}" class="nav-link">Ver Reservas</a>
     </div>
 </header>

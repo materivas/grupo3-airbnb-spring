@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Anfitrión - Airbnb</title>
+    <link rel="stylesheet" th:href="@{/css/propiedad-detail.css}">
+    <style>
+        body { font-family: "Inter", system-ui, sans-serif; background: #fafafa; color: #333; margin: 0; }
+        header.navbar { display: flex; justify-content: space-between; align-items: center; background: white; padding: 1rem 2rem; box-shadow: 0 2px 6px rgba(0,0,0,.05);}
+        .logo { height: 36px; }
+        main { max-width: 800px; margin: 3rem auto; padding: 0 1rem; }
+        .card { background: white; padding: 2rem; border-radius: 14px; box-shadow: 0 3px 10px rgba(0,0,0,.08); }
+        .title { margin: 0 0 1rem; font-weight: 700; font-size: 1.6rem; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: .4rem; font-weight: 600; color: #444; }
+        input[type="text"], input[type="email"], input[type="tel"], input[type="number"] { width: 100%; padding: .8rem; border: 1px solid #ccc; border-radius: 10px; }
+        .actions { display: flex; gap: .75rem; margin-top: 1rem; }
+        .btn { background: #FF385C; color: white; border: 0; padding: .8rem 1.4rem; border-radius: 10px; cursor: pointer; }
+        .btn.secondary { background: #666; }
+        .error { background: #fde8ec; color: #8f1d35; padding: .8rem 1rem; border-radius: 8px; margin-bottom: 1rem; }
+        .terms { display: flex; align-items: center; gap: .5rem; font-size: .95rem; color: #555; }
+        a.link { color: #FF385C; text-decoration: none; }
+    </style>
+</head>
+<body>
+<header class="navbar">
+    <div class="navbar-left">
+        <a th:href="@{/}"><img th:src="@{/images/logo.png}" alt="Airbnb" class="logo"></a>
+    </div>
+    <div class="navbar-right">
+        <a th:href="@{/}" class="nav-link">Inicio</a>
+    </div>
+</header>
+
+<main>
+    <div class="card">
+        <h1 class="title">Inscribirme como Anfitrión</h1>
+
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+
+        <form method="post" th:action="@{/anfitrion/registro}">
+            <div class="row">
+                <div class="form-group">
+                    <label for="dni">DNI</label>
+                    <input type="number" id="dni" name="dni" required min="1000000" max="99999999" placeholder="12345678">
+                </div>
+                <div class="form-group">
+                    <label for="identificacionFiscal">Identificación fiscal</label>
+                    <input type="text" id="identificacionFiscal" name="identificacionFiscal" required placeholder="CUIT/CUIL/RFC/NIF">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" name="apellido" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" name="email" required placeholder="nombre@dominio.com">
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" id="telefono" name="telefono" required placeholder="Ej: +54 911 5555 5555">
+                </div>
+            </div>
+
+            <div class="form-group terms">
+                <input type="checkbox" id="aceptaTerminos" name="aceptaTerminos" value="true" required>
+                <label for="aceptaTerminos">Acepto los <a class="link" href="#" onclick="alert('Aquí enlazar a Términos y Condiciones de Anfitrión'); return false;">Términos y Condiciones de Anfitrión</a></label>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn">Completar registro</button>
+                <a th:href="@{/}" class="btn secondary" role="button">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

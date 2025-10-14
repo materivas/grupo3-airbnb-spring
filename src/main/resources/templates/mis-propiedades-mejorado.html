@@ -1,0 +1,339 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Propiedades - Airbnb</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f7f7;
+            color: #222;
+            margin: 0;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .logo { height: 36px; }
+
+        .nav-link {
+            margin-left: 1.5rem;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover { color: #FF385C; }
+
+        main {
+            padding: 6rem 2rem 2rem;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+
+        .search-form h3 {
+            margin-bottom: 1rem;
+            color: #444;
+            font-size: 1.3rem;
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+
+        input[type="number"] {
+            padding: 0.9rem;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            width: 100%;
+            max-width: 350px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-submit {
+            background-color: #FF385C;
+            border: none;
+            color: white;
+            padding: 0.9rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-submit:hover {
+            background-color: #e61e4d;
+            transform: translateY(-2px);
+        }
+
+        .propiedades-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+
+        .propiedades-header h2 {
+            font-size: 1.4rem;
+            color: #222;
+            margin: 0;
+        }
+
+        .propiedades-header span {
+            color: #717171;
+            font-weight: 400;
+        }
+
+        .propiedades-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .propiedad-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .propiedad-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .propiedad-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .propiedad-content {
+            padding: 1.25rem;
+        }
+
+        .estado-badge {
+            display: inline-block;
+            padding: 0.35rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.7rem;
+        }
+
+        .estado-publicada {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .estado-borrador {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .estado-pausada {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .propiedad-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: #222;
+        }
+
+        .propiedad-location {
+            font-size: 0.9rem;
+            color: #717171;
+            margin-bottom: 0.8rem;
+        }
+
+        .propiedad-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #717171;
+            margin-bottom: 0.8rem;
+        }
+
+        .propiedad-price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #FF385C;
+            margin-bottom: 1rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 1rem;
+        }
+
+        .btn-outline {
+            flex: 1;
+            border: 1px solid #FF385C;
+            background: transparent;
+            color: #FF385C;
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-weight: 500;
+            text-align: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .btn-outline:hover {
+            background: #FF385C;
+            color: white;
+        }
+
+        .btn-outline.btn-secondary {
+            border-color: #717171;
+            color: #717171;
+        }
+
+        .btn-outline.btn-secondary:hover {
+            background: #717171;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #717171;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 0.8rem;
+            font-size: 1.5rem;
+            color: #222;
+        }
+
+        .empty-state p {
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-left">
+            <a th:href="@{/}">
+                <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo">
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a th:href="@{/anfitrion/registro}" class="nav-link">Ser Anfitrión</a>
+            <a th:href="@{/publicar}" class="nav-link">Publicar Propiedad</a>
+            <a th:href="@{/}" class="nav-link">Inicio</a>
+        </div>
+    </header>
+
+    <main>
+        <h1>Mis Propiedades</h1>
+
+        <!-- Buscar por DNI -->
+        <div th:if="${anfitrion == null}" class="search-form">
+            <h3>Consultar mis propiedades</h3>
+            <p style="color: #717171; margin-bottom: 1.5rem;">Ingresa tu DNI para ver todas tus publicaciones</p>
+            <form th:action="@{/mis-propiedades}" method="get">
+                <div class="form-group">
+                    <input type="number" id="dni" name="anfitrion" required placeholder="Ingresa tu DNI" min="1000000" max="99999999">
+                </div>
+                <button type="submit" class="btn-submit">Ver mis propiedades</button>
+            </form>
+        </div>
+
+        <!-- Mostrar propiedades -->
+        <div th:if="${anfitrion != null}">
+            <div class="propiedades-header">
+                <h2>Mis publicaciones <span>(DNI: <span th:text="${anfitrion}"></span>)</span></h2>
+                <div style="display: flex; gap: 1rem;"><a th:href="@{/publicar}" class="btn-submit">+ Nueva Propiedad</a><a th:href="@{/anfitrion/mis-reservas(dni=${anfitrion})}" class="btn-submit" style="background: #667eea;">Ver Reservas</a></div>
+            </div>
+
+            <div th:if="${propiedades.isEmpty()}" class="empty-state">
+                <h3>¡Aún no tienes propiedades publicadas!</h3>
+                <p>Comienza a generar ingresos publicando tu primera propiedad en la plataforma.</p>
+                <a th:href="@{/publicar}" class="btn-submit">Publicar mi primera propiedad</a>
+            </div>
+
+            <div th:unless="${propiedades.isEmpty()}" class="propiedades-container">
+                <div th:each="propiedad : ${propiedades}" class="propiedad-card">
+                    <img th:src="${propiedad.mainImageUrl != null ? propiedad.mainImageUrl : '/images/placeholder.jpg'}"
+                        alt="Imagen propiedad" class="propiedad-image" onerror="this.src='/images/placeholder.jpg'">
+
+                    <div class="propiedad-content">
+                        <span th:if="${propiedad.estado != null}"
+                              th:class="'estado-badge estado-' + ${propiedad.estado.toLowerCase()}"
+                              th:text="${propiedad.estado}">Publicada</span>
+
+                        <h3 class="propiedad-title" th:text="${propiedad.titulo}">Título de la propiedad</h3>
+                        <p class="propiedad-location" th:text="${propiedad.ubicacion}">Ubicación</p>
+
+                        <div class="propiedad-details">
+                            <span>👥 <span th:text="${propiedad.huespedes}">2</span> huéspedes</span>
+                            <span>🛏️ <span th:text="${propiedad.habitaciones}">1</span> hab.</span>
+                            <span>🚿 <span th:text="${propiedad.banos}">1</span> baño</span>
+                        </div>
+
+                        <div class="propiedad-price">
+                            <span th:text="${propiedad.moneda + ' $' + propiedad.precioPorNoche}">USD $100</span> / noche
+                        </div>
+
+                        <div class="card-actions">
+                            <a th:href="@{'/propiedad/' + ${propiedad.id}}" class="btn-outline">Ver Detalles</a>
+                            <a href="#" class="btn-outline btn-secondary" onclick="alert('Funcionalidad de edición en desarrollo'); return false;">Editar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+
+
+

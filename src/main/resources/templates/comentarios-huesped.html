@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comentarios del Huésped - Airbnb</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f7f7f7;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+
+        header.navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .logo { height: 36px; }
+
+        .nav-link {
+            margin-left: 1.5rem;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover { color: #FF385C; }
+
+        main {
+            max-width: 900px;
+            margin: 6rem auto 3rem;
+            padding: 0 2rem;
+        }
+
+        .profile-header {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #FF385C, #e61e4d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .profile-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e7e7e7;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FF385C;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #717171;
+            margin-top: 0.3rem;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 1.5rem;
+        }
+
+        .comentarios-container {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .comentario-card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .comentario-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .comentario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .anfitrion-info h3 {
+            margin: 0 0 0.3rem 0;
+            font-size: 1.1rem;
+            color: #222;
+        }
+
+        .anfitrion-info p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #717171;
+        }
+
+        .comentario-fecha {
+            font-size: 0.85rem;
+            color: #717171;
+        }
+
+        .comentario-texto {
+            color: #484848;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .empty-state {
+            background: white;
+            padding: 4rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            color: #222;
+            margin-bottom: 0.8rem;
+        }
+
+        .empty-state p {
+            color: #717171;
+            font-size: 1rem;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-back {
+            display: inline-block;
+            background-color: #FF385C;
+            color: white;
+            padding: 0.9rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn-back:hover {
+            background-color: #e61e4d;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-left">
+            <a th:href="@{/}">
+                <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo">
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a th:href="@{/}" class="nav-link">Inicio</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="profile-header">
+            <div class="profile-avatar" th:text="${usuario.substring(0, 1).toUpperCase()}">U</div>
+            <h1>Perfil de <span th:text="${usuario}">Usuario</span></h1>
+            <p style="color: #717171; font-size: 1rem;">Comentarios de anfitriones</p>
+
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-number" th:text="${comentarios.size()}">0</div>
+                    <div class="stat-label">Comentarios</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">⭐</div>
+                    <div class="stat-label">Huésped verificado</div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${!comentarios.isEmpty()}">
+            <h2 class="section-title">Comentarios de anfitriones (<span th:text="${comentarios.size()}">0</span>)</h2>
+            <div class="comentarios-container">
+                <div th:each="comentario : ${comentarios}" class="comentario-card">
+                    <div class="comentario-header">
+                        <div class="anfitrion-info">
+                            <h3>
+                                <span th:text="${comentario.anfitrion.nombre + ' ' + comentario.anfitrion.apellido}">Anfitrión</span>
+                            </h3>
+                            <p>Anfitrión verificado</p>
+                        </div>
+                        <div class="comentario-fecha" th:text="${#temporals.format(comentario.fechaCreacion, 'dd/MM/yyyy')}">
+                            01/01/2024
+                        </div>
+                    </div>
+                    <p class="comentario-texto" th:text="${comentario.comentario}">
+                        Comentario sobre el huésped...
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${comentarios.isEmpty()}" class="empty-state">
+            <div class="empty-icon">💬</div>
+            <h2>Aún no hay comentarios</h2>
+            <p>Este huésped aún no tiene comentarios de anfitriones.</p>
+            <a th:href="@{/}" class="btn-back">Volver al inicio</a>
+        </div>
+    </main>
+</body>
+</html>
+

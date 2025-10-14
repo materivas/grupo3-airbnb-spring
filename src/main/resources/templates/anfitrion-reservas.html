@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservas de mis Propiedades - Airbnb</title>
+    <link rel="stylesheet" th:href="@{/css/propiedad-detail.css}">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f7f7f7;
+            color: #222;
+            margin: 0;
+        }
+
+        header.navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .logo { height: 36px; }
+        .nav-link {
+            margin-left: 1.5rem;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: #FF385C; }
+
+        main {
+            max-width: 1200px;
+            margin: 6rem auto 3rem;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .search-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+
+        .search-form h3 {
+            margin-bottom: 1rem;
+            color: #444;
+            font-size: 1.3rem;
+        }
+
+        .form-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.9rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-input:focus {
+            border-color: #FF385C;
+            outline: none;
+        }
+
+        .btn-submit {
+            background-color: #FF385C;
+            color: white;
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #e61e4d;
+        }
+
+        .info-card {
+            background: #e8f4f8;
+            border-left: 4px solid #17a2b8;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .info-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: #17a2b8;
+            font-size: 1.1rem;
+        }
+
+        .reservas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+        }
+
+        .reserva-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .reserva-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .reserva-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .reserva-content {
+            padding: 1.5rem;
+        }
+
+        .huesped-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .reserva-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 0.8rem;
+        }
+
+        .reserva-details {
+            font-size: 0.9rem;
+            color: #717171;
+            margin-bottom: 1rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .reserva-price {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .price-total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #FF385C;
+        }
+
+        .btn-comentar {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-comentar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .no-reservas {
+            text-align: center;
+            background: white;
+            border-radius: 16px;
+            padding: 4rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .no-reservas h2 {
+            color: #222;
+            margin-bottom: 0.8rem;
+            font-size: 1.5rem;
+        }
+
+        .no-reservas p {
+            color: #717171;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-left">
+            <a th:href="@{/}">
+                <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo">
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a th:href="@{/mis-propiedades}" class="nav-link">Mis Propiedades</a>
+            <a th:href="@{/}" class="nav-link">Inicio</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1>Reservas de mis Propiedades</h1>
+            <p th:if="${anfitrionDni != null}" style="color: #717171;">
+                Anfitrión DNI: <strong th:text="${anfitrionDni}">12345678</strong>
+            </p>
+        </div>
+
+        <!-- Buscar por DNI -->
+        <div th:if="${anfitrionDni == null}" class="search-form">
+            <h3>Consultar reservas</h3>
+            <p style="color: #717171; margin-bottom: 1.5rem;">Ingresa tu DNI de anfitrión para ver las reservas de tus propiedades</p>
+            <form th:action="@{/anfitrion/mis-reservas}" method="get">
+                <input type="number" name="dni" class="form-input" placeholder="Ingresa tu DNI" required min="1000000" max="99999999">
+                <button type="submit" class="btn-submit">Ver reservas</button>
+            </form>
+        </div>
+
+        <!-- Mostrar reservas -->
+        <div th:if="${anfitrionDni != null}">
+            <div class="info-card">
+                <h3>💡 Gestiona tus huéspedes</h3>
+                <p style="margin: 0; color: #555;">Aquí puedes ver todas las reservas completadas de tus propiedades y escribir comentarios sobre tus huéspedes para ayudar a la comunidad.</p>
+            </div>
+
+            <div th:if="${reservas.isEmpty()}" class="no-reservas">
+                <h2>No tienes reservas completadas</h2>
+                <p>Aún no hay reservas finalizadas en tus propiedades. Cuando tus huéspedes completen su estadía, podrás escribir comentarios sobre ellos.</p>
+                <a th:href="@{/mis-propiedades(anfitrion=${anfitrionDni})}" class="btn-submit">Volver a Mis Propiedades</a>
+            </div>
+
+            <div th:unless="${reservas.isEmpty()}" class="reservas-grid">
+                <div th:each="reserva : ${reservas}" class="reserva-card">
+                    <img th:src="${reserva.imagenUrl}" alt="Propiedad" class="reserva-image" onerror="this.src='/images/placeholder.jpg'">
+
+                    <div class="reserva-content">
+                        <span class="huesped-badge">
+                            👤 Huésped: <strong th:text="${reserva.huesped}">usuario</strong>
+                        </span>
+
+                        <h3 class="reserva-title" th:text="${reserva.propiedadTitulo}">Título de la propiedad</h3>
+
+                        <div class="reserva-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Check-in:</span>
+                                <span th:text="${#temporals.format(reserva.entrada, 'dd/MM/yyyy')}">01/01/2024</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Check-out:</span>
+                                <span th:text="${#temporals.format(reserva.salida, 'dd/MM/yyyy')}">05/01/2024</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Huéspedes:</span>
+                                <span th:text="${reserva.nroHuespedes}">2</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Días:</span>
+                                <span th:text="${reserva.diasEstadia}">4</span>
+                            </div>
+                        </div>
+
+                        <div class="reserva-price">
+                            <div class="price-label" style="font-size: 0.85rem; color: #717171; margin-bottom: 0.3rem;">Precio Total</div>
+                            <div class="price-total">$<span th:text="${#numbers.formatDecimal(reserva.precioTotal, 1, 2)}">500.00</span></div>
+                        </div>
+
+                        <a th:href="@{/anfitrion/comentario/nuevo(reservaId=${reserva.id}, anfitrionDni=${anfitrionDni})}"
+                           class="btn-comentar">
+                            💬 Comentar sobre este huésped
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

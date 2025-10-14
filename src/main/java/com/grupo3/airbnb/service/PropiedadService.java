@@ -2,6 +2,7 @@ package com.grupo3.airbnb.service;
 
 import com.grupo3.airbnb.dto.PropiedadDetailDTO;
 import com.grupo3.airbnb.dto.PropiedadListDTO;
+import com.grupo3.airbnb.dto.PropiedadListEstadoDTO;
 import com.grupo3.airbnb.entity.Anfitrion;
 import com.grupo3.airbnb.entity.Propiedad;
 import com.grupo3.airbnb.entity.PropiedadImagen;
@@ -42,12 +43,9 @@ public class PropiedadService {
                 anfitrion = anfitrionService.save(anfitrion); // Guardar en la base de datos
             }
 
-            // 3. Crear propiedad - ¡ESTA ES LA PARTE QUE FALTA!
+            // 3. Crear propiedad
             Propiedad propiedad = new Propiedad();
-
-            // ESTA LÍNEA ES LA MÁS IMPORTANTE - ASIGNAR EL ANFITRIÓN
             propiedad.setAnfitrion(anfitrion);
-
             propiedad.setTitulo(titulo);
             propiedad.setDescripcion(descripcion);
             propiedad.setUbicacion(ubicacion);
@@ -116,9 +114,9 @@ public class PropiedadService {
     public List<PropiedadListDTO> getPropiedadesByAnfitrion(Long anfitrionDni) {
         try {
             // Verificar que el anfitrión existe
-            Anfitrion anfitrion = anfitrionService.getAnfitrionByDni(anfitrionDni);
+            Anfitrion anfitrion = anfitrionService.findByDni(anfitrionDni);
             if (anfitrion == null) {
-                throw new RuntimeException("Anfitrión no encontrado con DNI: " + anfitrionDni);
+                return List.of(); // Retornar lista vacía si no existe el anfitrión
             }
 
             // Obtener propiedades del anfitrión
@@ -135,17 +133,25 @@ public class PropiedadService {
     }
 
     private PropiedadListDTO convertToDTO(Propiedad propiedad) {
-        return new PropiedadListDTO(
-                propiedad.getId(),
-                propiedad.getTitulo(),
-                propiedad.getUbicacion(),
-                propiedad.getPrecioPorNoche(),
-                propiedad.getHuespedes(),
-                propiedad.getHabitaciones(),
-                propiedad.getBanos(),
-                propiedad.getCalificacion(),
-                propiedad.getImages().isEmpty() ? null : propiedad.getImages().get(0).getUrl(),
-                propiedad.getMoneda());
+        PropiedadListEstadoDTO dto = new PropiedadListEstadoDTO();
+        dto.setId(propiedad.getId());
+        dto.setTitulo(propiedad.getTitulo());
+        dto.setUbicacion(propiedad.getUbicacion());
+        dto.setPrecioPorNoche(propiedad.getPrecioPorNoche());
+        dto.setHuespedes(propiedad.getHuespedes());
+        dto.setHabitaciones(propiedad.getHabitaciones());
+        dto.setBanos(propiedad.getBanos());
+        dto.setCalificacion(propiedad.getCalificacion());
+        dto.setMainImageUrl(propiedad.getImages().isEmpty() ? null : propiedad.getImages().get(0).getUrl());
+        dto.setMoneda(propiedad.getMoneda());
+        if (propiedad.getEstado() != null) {
+            switch (propiedad.getEstado()) {
+                case PUBLICADA -> dto.setEstado("Publicada");
+                case BORRADOR -> dto.setEstado("Borrador");
+                case PAUSADA -> dto.setEstado("Pausada");
+            }
+        }
+        return dto;
     }
 
     public PropiedadDetailDTO getPropiedadDetail(Long id) {
@@ -175,6 +181,13 @@ public class PropiedadService {
         Timestamp inicioTS = Timestamp.valueOf(fechaInicio.atStartOfDay());
         Timestamp finTS = Timestamp.valueOf(fechaFin.atTime(23, 59, 59));
         return !reservaRepository.existsReservaWithPassedDates(propiedadId, inicioTS, finTS);
+    }
+
+    // Obtener propiedades del anfitrión como entidades (para filtrar reservas)
+    public List<Propiedad> getPropiedadesByAnfitrionEntity(Long anfitrionDni) {
+        return propiedadRepository.findAll().stream()
+                .filter(p -> p.getAnfitrion() != null && p.getAnfitrion().getDni().equals(anfitrionDni))
+                .collect(Collectors.toList());
     }
 
 }

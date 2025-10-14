@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Reservas - Airbnb</title>
+    <link rel="stylesheet" th:href="@{/css/propiedad-detail.css}">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f7f7f7;
+            color: #222;
+            margin: 0;
+        }
+
+        header.navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .logo { height: 36px; }
+        .nav-link {
+            margin-left: 1.5rem;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: #FF385C; }
+
+        main {
+            max-width: 1200px;
+            margin: 6rem auto 3rem;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #222;
+        }
+
+        /* Filtro */
+        .filtros-container {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filtro-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-filtro {
+            background-color: #FF385C;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            display: inline-block;
+        }
+
+        .btn-filtro:hover {
+            background-color: #e61e4d;
+        }
+
+        .btn-filtro.active {
+            background-color: #222;
+        }
+
+        .btn-filtro.secondary {
+            background-color: #717171;
+        }
+
+        .btn-filtro.secondary:hover {
+            background-color: #555;
+        }
+
+        .buscar-usuario-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .buscar-usuario-card h2 {
+            color: #222;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .form-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.9rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-input:focus {
+            border-color: #FF385C;
+            outline: none;
+        }
+
+        .reservas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+        }
+
+        .reserva-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .reserva-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .reserva-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .reserva-content {
+            padding: 1.5rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.35rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .status-ready {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .reserva-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 0.8rem;
+        }
+
+        .reserva-details {
+            font-size: 0.9rem;
+            color: #717171;
+            margin-bottom: 1rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .reserva-price {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .price-total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #FF385C;
+        }
+
+        .calificar-section {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .no-reservas {
+            text-align: center;
+            background: white;
+            border-radius: 16px;
+            padding: 4rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .no-reservas h2 {
+            color: #222;
+            margin-bottom: 0.8rem;
+            font-size: 1.5rem;
+        }
+
+        .no-reservas p {
+            color: #717171;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-left">
+            <a th:href="@{/}">
+                <img th:src="@{/images/logo.png}" alt="Logo Airbnb" class="logo">
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a th:href="@{/}" class="nav-link">Inicio</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1>Mis Reservas</h1>
+            <p th:if="${usuario != null}" style="color: #717171;">
+                Reservas de <strong th:text="${usuario}">Usuario</strong>
+            </p>
+        </div>
+
+        <!-- Buscar usuario -->
+        <div th:if="${usuario == null or usuario.isEmpty()}" class="buscar-usuario-card">
+            <h2>Buscar mis reservas</h2>
+            <p style="color: #717171; margin-bottom: 1.5rem;">Ingresa tu nombre de usuario para ver tus reservas</p>
+            <form th:action="@{/mis-reservas}" method="get">
+                <input type="text" name="usuario" class="form-input" placeholder="Nombre de usuario" required>
+                <button type="submit" class="btn-filtro">Buscar</button>
+            </form>
+        </div>
+
+        <!-- Filtros y contenido -->
+        <div th:if="${usuario != null and !usuario.isEmpty()}">
+            <div class="filtros-container">
+                <div class="filtro-info">
+                    <span style="font-weight: 600; color: #222;">
+                        <span th:text="${reservas.size()}">0</span> reserva(s) encontrada(s)
+                    </span>
+                </div>
+                <div style="display: flex; gap: 0.8rem;">
+                    <a th:href="@{/mis-reservas(usuario=${usuario}, soloSinResenar=false)}"
+                       th:class="${!soloSinResenar} ? 'btn-filtro active' : 'btn-filtro secondary'">
+                        Todas las reservas
+                    </a>
+                    <a th:href="@{/mis-reservas(usuario=${usuario}, soloSinResenar=true)}"
+                       th:class="${soloSinResenar} ? 'btn-filtro active' : 'btn-filtro secondary'">
+                        Sin reseñar
+                    </a>
+                </div>
+            </div>
+
+            <!-- Lista de reservas -->
+            <div th:if="${reservas.isEmpty()}" class="no-reservas">
+                <h2 th:if="${soloSinResenar}">¡Ya has reseñado todas tus propiedades!</h2>
+                <h2 th:unless="${soloSinResenar}">No tienes reservas</h2>
+                <p th:if="${soloSinResenar}">No hay propiedades pendientes de reseñar. ¡Excelente trabajo!</p>
+                <p th:unless="${soloSinResenar}">Aún no has realizado ninguna reserva.</p>
+                <a th:href="@{/}" class="btn-filtro">Explorar propiedades</a>
+            </div>
+
+            <div th:unless="${reservas.isEmpty()}" class="reservas-grid">
+                <div th:each="reserva : ${reservas}" class="reserva-card">
+                    <img th:src="${reserva.imagenUrl}" alt="Propiedad" class="reserva-image" onerror="this.src='/images/placeholder.jpg'">
+
+                    <div class="reserva-content">
+                        <span th:if="${reserva.puedeCalificar}" class="status-badge status-ready">
+                            ✏️ Pendiente de reseñar
+                        </span>
+                        <span th:unless="${reserva.puedeCalificar}" class="status-badge status-completed">
+                            ✅ Completada
+                        </span>
+
+                        <h3 class="reserva-title" th:text="${reserva.propiedadTitulo}">Título</h3>
+
+                        <div class="reserva-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Check-in:</span>
+                                <span th:text="${#temporals.format(reserva.entrada, 'dd/MM/yyyy')}">01/01/2024</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Check-out:</span>
+                                <span th:text="${#temporals.format(reserva.salida, 'dd/MM/yyyy')}">05/01/2024</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Huéspedes:</span>
+                                <span th:text="${reserva.nroHuespedes}">2</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Días:</span>
+                                <span th:text="${reserva.diasEstadia}">4</span>
+                            </div>
+                        </div>
+
+                        <div class="reserva-price">
+                            <div class="price-label">Precio Total</div>
+                            <div class="price-total">$<span th:text="${#numbers.formatDecimal(reserva.precioTotal, 1, 2)}">500.00</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

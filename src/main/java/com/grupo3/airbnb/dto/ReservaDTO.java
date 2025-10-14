@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ReservaDTO {
 	private Long id;
-	
+	private Long propiedadId; // ID de la propiedad (necesario para comentarios del anfitrión)
     private String propiedadTitulo;
     private int nroHuespedes;
     private String huesped; // De momento es un String, pero debería ser un Usuario autenticado

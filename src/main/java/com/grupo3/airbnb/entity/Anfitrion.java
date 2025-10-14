@@ -17,6 +17,11 @@ public class Anfitrion {
     private String nombre;
     private String apellido;
 
+    // Nuevos campos para registro de anfitrión
+    private String email;
+    private String telefono;
+    private String identificacionFiscal;
+
     @OneToMany(mappedBy = "anfitrion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Propiedad> propiedades;
 

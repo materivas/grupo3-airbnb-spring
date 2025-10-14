@@ -71,6 +71,15 @@ public class ReservaService {
                 .toList();
     }
 
+    // Obtener reservas sin reseñar del usuario
+    public List<ReservaDTO> getReservasSinResenar(String usuarioId) {
+        return reservaRepository.findByHuespedIgnoreCase(usuarioId)
+                .stream()
+                .map(this::convertToReservaDTO)
+                .filter(ReservaDTO::isPuedeCalificar) // Solo las que pueden calificar (checkout pasado y sin review)
+                .toList();
+    }
+
     // Obtener todos los usuarios que tienen reservas
     public List<String> getUsuariosConReservas() {
         return reservaRepository.findAll().stream()
@@ -107,9 +116,8 @@ public class ReservaService {
                                             .isEmpty();
 
         // Puede calificar si checkout pasó y no existe review previa
-        //dto.setPuedeCalificar(checkoutPasado && sinReview);
-        dto.setPuedeCalificar(true);
-        
+        dto.setPuedeCalificar(checkoutPasado && sinReview);
+
         return dto;
     }
 
@@ -117,5 +125,41 @@ public class ReservaService {
     public int calcularDiasEstadia(Reserva reserva) {
         long dias = reserva.getSalida().toLocalDateTime().toLocalDate().toEpochDay() - reserva.getEntrada().toLocalDateTime().toLocalDate().toEpochDay();
         return (int) dias;
+    }
+
+    // Obtener reservas de las propiedades del anfitrión (para Historia 4: comentar sobre huésped)
+    public List<ReservaDTO> getReservasByAnfitrion(Long anfitriónDni) {
+        List<Propiedad> propiedades = propiedadService.getPropiedadesByAnfitrionEntity(anfitriónDni);
+
+        return reservaRepository.findAll().stream()
+                .filter(reserva -> propiedades.contains(reserva.getPropiedad()))
+                .filter(reserva -> {
+                    // Solo mostrar reservas completadas (checkout en el pasado)
+                    LocalDate fechaCheckout = reserva.getSalida().toLocalDateTime().toLocalDate();
+                    return fechaCheckout.isBefore(LocalDate.now());
+                })
+                .map(this::convertToReservaDTOParaAnfitrion)
+                .toList();
+    }
+
+    private ReservaDTO convertToReservaDTOParaAnfitrion(Reserva reserva) {
+        ReservaDTO dto = new ReservaDTO();
+        dto.setId(reserva.getId());
+        dto.setPropiedadId(reserva.getPropiedad().getId());
+        dto.setPropiedadTitulo(reserva.getPropiedad().getTitulo());
+        dto.setNroHuespedes(reserva.getNroHuespedes());
+        dto.setHuesped(reserva.getHuesped());
+        dto.setEntrada(reserva.getEntrada().toLocalDateTime());
+        dto.setSalida(reserva.getSalida().toLocalDateTime());
+        dto.setPrecioTotal(reserva.getPrecioTotal());
+        dto.setDiasEstadia(calcularDiasEstadia(reserva));
+
+        if (!reserva.getPropiedad().getImages().isEmpty()) {
+            dto.setImagenUrl(reserva.getPropiedad().getImages().get(0).getUrl());
+        } else {
+            dto.setImagenUrl("/images/placeholder.jpg");
+        }
+
+        return dto;
     }
 }
